@@ -1,0 +1,197 @@
+{
+  "filename": "SLUMarkfuktighetKlassad.tif",
+  "path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif",
+  "file_size_bytes": 8440050454,
+  "file_size_human": "7.86 GiB",
+  "driver": "GTiff",
+  "crs": "PROJCS[\"SWEREF99 TM\",GEOGCS[\"SWEREF99\",DATUM[\"SWEREF99\",SPHEROID[\"GRS 1980\",6378137,298.257222101004,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6619\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4619\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",15],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"3006\"]]",
+  "epsg": 3006,
+  "width": 325000,
+  "height": 770000,
+  "band_count": 1,
+  "pixel_resolution": {
+    "x": 2.0,
+    "y": 2.0
+  },
+  "bounds": {
+    "left": 267499.9999999999,
+    "bottom": 6132499.999999999,
+    "right": 917499.9999999999,
+    "top": 7672499.999999999
+  },
+  "transform": {
+    "a": 2.0,
+    "b": 0.0,
+    "c": 267499.9999999999,
+    "d": 0.0,
+    "e": -2.0,
+    "f": 7672499.999999999,
+    "gdal": [
+      267499.9999999999,
+      2.0,
+      0.0,
+      7672499.999999999,
+      0.0,
+      -2.0
+    ]
+  },
+  "dtypes": [
+    "uint8"
+  ],
+  "nodata_value": 255.0,
+  "nodata_values_by_band": [
+    255.0
+  ],
+  "band_descriptions": [
+    null
+  ],
+  "units": [
+    null
+  ],
+  "tags": {
+    "default": {
+      "DataType": "Generic",
+      "AREA_OR_POINT": "Area"
+    },
+    "DERIVED_SUBDATASETS": {
+      "DERIVED_SUBDATASET_1_NAME": "DERIVED_SUBDATASET:LOGAMPLITUDE:C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif",
+      "DERIVED_SUBDATASET_1_DESC": "log10 of amplitude of input bands from C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif"
+    },
+    "Esri": {
+      "PyramidResamplingType": "NEAREST"
+    },
+    "IMAGE_STRUCTURE": {
+      "COMPRESSION": "LZW",
+      "INTERLEAVE": "BAND"
+    }
+  },
+  "band_tags": {
+    "1": {
+      "default": {
+        "RepresentationType": "THEMATIC"
+      }
+    }
+  },
+  "compression": "LZW",
+  "is_tiled": true,
+  "block_sizes": [
+    {
+      "band": 1,
+      "height": 128,
+      "width": 128
+    }
+  ],
+  "overview_levels": {
+    "1": []
+  },
+  "has_overviews": false,
+  "statistics": {
+    "mode": "approximate_downsampled",
+    "are_approximate": true,
+    "approximate_fields": [
+      "all_statistics"
+    ],
+    "source_pixels_per_band": 250250000000,
+    "source_pixels_total": 250250000000,
+    "sample_shape_per_band": {
+      "height": 1539,
+      "width": 649
+    },
+    "sampling_resampling": "nearest",
+    "memory_safety": "Reads at most 1024x1024 source pixels at once during an exact scan; large rasters use a maximum 1000000-pixel grid per band.",
+    "bands": [
+      {
+        "band": 1,
+        "minimum": 1.0,
+        "maximum": 4.0,
+        "mean": 1.7306987675965089,
+        "standard_deviation": 1.0304212922768177,
+        "percentiles": {
+          "1": 1.0,
+          "5": 1.0,
+          "25": 1.0,
+          "50": 1.0,
+          "75": 2.0,
+          "95": 4.0,
+          "99": 4.0
+        },
+        "percentiles_are_approximate": true,
+        "nodata_percentage": 55.57047329274507,
+        "valid_percentage": 44.42952670725493,
+        "non_finite_percentage": 0.0,
+        "pixel_percentages_are_approximate": true,
+        "examined_pixel_count": 998811,
+        "valid_examined_pixel_count": 443767,
+        "nodata_examined_pixel_count": 555044,
+        "sample_of_valid_values": [
+          4.0,
+          2.0,
+          1.0,
+          2.0,
+          1.0,
+          1.0,
+          1.0,
+          2.0,
+          3.0,
+          1.0,
+          1.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          1.0,
+          2.0,
+          1.0,
+          1.0
+        ],
+        "requested_valid_value_sample_size": 20,
+        "class_distribution": {
+          "status": "available",
+          "unique_valid_values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "classes": [
+            {
+              "value": 1,
+              "sample_count": 262070,
+              "percentage_of_valid": 59.05576575094588
+            },
+            {
+              "value": 2,
+              "sample_count": 88498,
+              "percentage_of_valid": 19.942447275259315
+            },
+            {
+              "value": 3,
+              "sample_count": 43835,
+              "percentage_of_valid": 9.877931436992837
+            },
+            {
+              "value": 4,
+              "sample_count": 49364,
+              "percentage_of_valid": 11.12385553680197
+            }
+          ],
+          "is_approximate": true,
+          "valid_pixels_counted": 443767
+        }
+      }
+    ]
+  },
+  "preview": {
+    "path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\reports\\raster_inspection\\SLUMarkfuktighetKlassad_preview.png",
+    "source_band": 1,
+    "width": 432,
+    "height": 1023,
+    "resampling": "nearest",
+    "display_scaling": "linear_min_max_of_preview_sample",
+    "display_minimum": 1.0,
+    "display_maximum": 4.0,
+    "note": "Visualization only. Display scaling affects the PNG, not the source raster; no semantic interpretation was applied."
+  },
+  "json_report_path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\reports\\raster_inspection\\SLUMarkfuktighetKlassad.json"
+}

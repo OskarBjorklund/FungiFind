@@ -1,0 +1,161 @@
+{
+  "filename": "SGD2_Vegkvot.tif",
+  "path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SGD2_Vegkvot.tif",
+  "file_size_bytes": 3883599488,
+  "file_size_human": "3.62 GiB",
+  "driver": "GTiff",
+  "crs": "PROJCS[\"SWEREF99 TM\",GEOGCS[\"SWEREF99\",DATUM[\"SWEREF99\",SPHEROID[\"GRS 1980\",6378137,298.257222101004,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6619\"]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4619\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",15],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"3006\"]]",
+  "epsg": null,
+  "width": 80000,
+  "height": 160000,
+  "band_count": 1,
+  "pixel_resolution": {
+    "x": 10.0,
+    "y": 10.0
+  },
+  "bounds": {
+    "left": 200000.0,
+    "bottom": 6100000.0,
+    "right": 1000000.0,
+    "top": 7700000.0
+  },
+  "transform": {
+    "a": 10.0,
+    "b": 0.0,
+    "c": 200000.0,
+    "d": 0.0,
+    "e": -10.0,
+    "f": 7700000.0,
+    "gdal": [
+      200000.0,
+      10.0,
+      0.0,
+      7700000.0,
+      0.0,
+      -10.0
+    ]
+  },
+  "dtypes": [
+    "int16"
+  ],
+  "nodata_value": -1.0,
+  "nodata_values_by_band": [
+    -1.0
+  ],
+  "band_descriptions": [
+    null
+  ],
+  "units": [
+    null
+  ],
+  "tags": {
+    "default": {
+      "DataType": "Generic",
+      "AREA_OR_POINT": "Area"
+    },
+    "DERIVED_SUBDATASETS": {
+      "DERIVED_SUBDATASET_1_NAME": "DERIVED_SUBDATASET:LOGAMPLITUDE:C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SGD2_Vegkvot.tif",
+      "DERIVED_SUBDATASET_1_DESC": "log10 of amplitude of input bands from C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SGD2_Vegkvot.tif"
+    },
+    "IMAGE_STRUCTURE": {
+      "COMPRESSION": "LZW",
+      "INTERLEAVE": "BAND"
+    }
+  },
+  "band_tags": {
+    "1": {
+      "default": {
+        "RepresentationType": "THEMATIC"
+      }
+    }
+  },
+  "compression": "LZW",
+  "is_tiled": true,
+  "block_sizes": [
+    {
+      "band": 1,
+      "height": 128,
+      "width": 128
+    }
+  ],
+  "overview_levels": {
+    "1": []
+  },
+  "has_overviews": false,
+  "statistics": {
+    "mode": "approximate_downsampled",
+    "are_approximate": true,
+    "approximate_fields": [
+      "all_statistics"
+    ],
+    "source_pixels_per_band": 12800000000,
+    "source_pixels_total": 12800000000,
+    "sample_shape_per_band": {
+      "height": 1414,
+      "width": 707
+    },
+    "sampling_resampling": "nearest",
+    "memory_safety": "Reads at most 1024x1024 source pixels at once during an exact scan; large rasters use a maximum 1000000-pixel grid per band.",
+    "bands": [
+      {
+        "band": 1,
+        "minimum": 0.0,
+        "maximum": 100.0,
+        "mean": 42.68734959715477,
+        "standard_deviation": 35.876280258005835,
+        "percentiles": {
+          "1": 0.0,
+          "5": 0.0,
+          "25": 0.0,
+          "50": 45.0,
+          "75": 77.0,
+          "95": 96.0,
+          "99": 99.0
+        },
+        "percentiles_are_approximate": true,
+        "nodata_percentage": 67.99293386602754,
+        "valid_percentage": 32.00706613397246,
+        "non_finite_percentage": 0.0,
+        "pixel_percentages_are_approximate": true,
+        "examined_pixel_count": 999698,
+        "valid_examined_pixel_count": 319974,
+        "nodata_examined_pixel_count": 679724,
+        "sample_of_valid_values": [
+          0.0,
+          81.0,
+          61.0,
+          19.0,
+          0.0,
+          0.0,
+          94.0,
+          95.0,
+          3.0,
+          66.0,
+          0.0,
+          77.0,
+          95.0,
+          40.0,
+          83.0,
+          0.0,
+          91.0,
+          68.0,
+          11.0,
+          88.0
+        ],
+        "requested_valid_value_sample_size": 20
+      }
+    ]
+  },
+  "preview": {
+    "path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\reports\\raster_inspection\\SGD2_Vegkvot_preview.png",
+    "source_band": 1,
+    "width": 512,
+    "height": 1024,
+    "resampling": "nearest",
+    "display_scaling": "linear_min_max_of_preview_sample",
+    "display_minimum": 0.0,
+    "display_maximum": 100.0,
+    "note": "Visualization only. Display scaling affects the PNG, not the source raster; no semantic interpretation was applied."
+  },
+  "json_report_path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\reports\\raster_inspection\\SGD2_Vegkvot.json"
+}

@@ -1,0 +1,163 @@
+{
+  "filename": "Bjork_andel.tif",
+  "path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\kind\\Bjork_andel.tif",
+  "file_size_bytes": 2952212025,
+  "file_size_human": "2.75 GiB",
+  "driver": "GTiff",
+  "crs": "EPSG:25833",
+  "epsg": 25833,
+  "width": 52600,
+  "height": 123200,
+  "band_count": 1,
+  "pixel_resolution": {
+    "x": 12.5,
+    "y": 12.5
+  },
+  "bounds": {
+    "left": 265000.0,
+    "bottom": 6132500.0,
+    "right": 922500.0,
+    "top": 7672500.0
+  },
+  "transform": {
+    "a": 12.5,
+    "b": 0.0,
+    "c": 265000.0,
+    "d": 0.0,
+    "e": -12.5,
+    "f": 7672500.0,
+    "gdal": [
+      265000.0,
+      12.5,
+      0.0,
+      7672500.0,
+      0.0,
+      -12.5
+    ]
+  },
+  "dtypes": [
+    "int16"
+  ],
+  "nodata_value": -1.0,
+  "nodata_values_by_band": [
+    -1.0
+  ],
+  "band_descriptions": [
+    null
+  ],
+  "units": [
+    null
+  ],
+  "tags": {
+    "default": {
+      "AREA_OR_POINT": "Area"
+    },
+    "DERIVED_SUBDATASETS": {
+      "DERIVED_SUBDATASET_1_NAME": "DERIVED_SUBDATASET:LOGAMPLITUDE:C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\kind\\Bjork_andel.tif",
+      "DERIVED_SUBDATASET_1_DESC": "log10 of amplitude of input bands from C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\kind\\Bjork_andel.tif"
+    },
+    "IMAGE_STRUCTURE": {
+      "COMPRESSION": "LZW",
+      "INTERLEAVE": "BAND"
+    }
+  },
+  "band_tags": {
+    "1": {}
+  },
+  "compression": "LZW",
+  "is_tiled": false,
+  "block_sizes": [
+    {
+      "band": 1,
+      "height": 20,
+      "width": 52600
+    }
+  ],
+  "overview_levels": {
+    "1": [
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+    ]
+  },
+  "has_overviews": true,
+  "statistics": {
+    "mode": "approximate_downsampled",
+    "are_approximate": true,
+    "approximate_fields": [
+      "all_statistics"
+    ],
+    "source_pixels_per_band": 6480320000,
+    "source_pixels_total": 6480320000,
+    "sample_shape_per_band": {
+      "height": 1530,
+      "width": 653
+    },
+    "sampling_resampling": "nearest",
+    "memory_safety": "Reads at most 1024x1024 source pixels at once during an exact scan; large rasters use a maximum 1000000-pixel grid per band.",
+    "bands": [
+      {
+        "band": 1,
+        "minimum": 0.0,
+        "maximum": 100.0,
+        "mean": 6.47832627691199,
+        "standard_deviation": 13.087636518721716,
+        "percentiles": {
+          "1": 0.0,
+          "5": 0.0,
+          "25": 0.0,
+          "50": 0.0,
+          "75": 7.0,
+          "95": 36.0,
+          "99": 63.0
+        },
+        "percentiles_are_approximate": true,
+        "nodata_percentage": 0.0,
+        "valid_percentage": 100.0,
+        "non_finite_percentage": 0.0,
+        "pixel_percentages_are_approximate": true,
+        "examined_pixel_count": 999090,
+        "valid_examined_pixel_count": 999090,
+        "nodata_examined_pixel_count": 0,
+        "sample_of_valid_values": [
+          21.0,
+          0.0,
+          0.0,
+          19.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          12.0,
+          0.0,
+          7.0,
+          8.0,
+          12.0,
+          0.0,
+          20.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "requested_valid_value_sample_size": 20
+      }
+    ]
+  },
+  "preview": {
+    "path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\reports\\raster_inspection\\Bjork_andel_preview.png",
+    "source_band": 1,
+    "width": 437,
+    "height": 1024,
+    "resampling": "nearest",
+    "display_scaling": "linear_min_max_of_preview_sample",
+    "display_minimum": 0.0,
+    "display_maximum": 100.0,
+    "note": "Visualization only. Display scaling affects the PNG, not the source raster; no semantic interpretation was applied."
+  },
+  "json_report_path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\reports\\raster_inspection\\Bjork_andel.json"
+}
