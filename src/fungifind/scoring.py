@@ -11,6 +11,7 @@ from fungifind.config import SpeciesConfig, TrapezoidPreference, get_species_con
 from fungifind.models import (
     DynamicWeatherFeatures,
     FeatureSnapshot,
+    HabitatExclusion,
     Location,
     ModelResult,
     Species,
@@ -36,6 +37,43 @@ class ScoringEngine(Protocol):
         habitat: FeatureSnapshot[StaticHabitatFeatures],
         weather: FeatureSnapshot[DynamicWeatherFeatures],
     ) -> ModelResult: ...
+
+
+def collect_habitat_exclusions(
+    habitat: FeatureSnapshot[StaticHabitatFeatures],
+) -> tuple[HabitatExclusion, ...]:
+    """Collect every validated exclusion marker without collapsing source provenance."""
+
+    exclusions: list[HabitatExclusion] = []
+    seen: set[tuple[str, str | None, str, float | int | None]] = set()
+    for source_feature, provenance in habitat.feature_provenance.items():
+        if not provenance.semantic_status.startswith("validated"):
+            continue
+        reason_code = provenance.details.get("habitat_exclusion_code")
+        reason_label = provenance.details.get("habitat_exclusion_label")
+        if not isinstance(reason_code, str) or not isinstance(reason_label, str):
+            continue
+        key = (
+            provenance.source_name,
+            provenance.source_path,
+            reason_code,
+            provenance.raw_value,
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        exclusions.append(
+            HabitatExclusion(
+                reason_code=reason_code,
+                reason_label=reason_label,
+                source_feature=source_feature,
+                source_name=provenance.source_name,
+                source_path=provenance.source_path,
+                raw_value=provenance.raw_value,
+                semantic_status=provenance.semantic_status,
+            )
+        )
+    return tuple(exclusions)
 
 
 def _preference_component(
@@ -90,11 +128,17 @@ def _soil_component(features: StaticHabitatFeatures, config: SpeciesConfig) -> _
 
 
 def _static_wetness_component(
-    features: StaticHabitatFeatures,
+    habitat: FeatureSnapshot[StaticHabitatFeatures],
     config: SpeciesConfig,
 ) -> _Component:
-    wetness_class = features.static_wetness_class
-    if wetness_class is None:
+    wetness_class = habitat.features.static_wetness_class
+    provenance = habitat.feature_provenance.get("static_wetness_class")
+    semantics_are_validated = (
+        provenance is not None
+        and provenance.semantic_status.startswith("validated")
+        and provenance.interpreted_value == wetness_class
+    )
+    if wetness_class is None or not semantics_are_validated:
         return _Component(
             score=None,
             completeness=0.0,
@@ -112,6 +156,34 @@ def _static_wetness_component(
 
 def _season_component(target_date: date, config: SpeciesConfig) -> _Component:
     return _Component(score=config.season_preference.score(target_date.timetuple().tm_yday), completeness=1.0)
+
+
+def _rain_components(
+    features: DynamicWeatherFeatures, config: SpeciesConfig
+) -> dict[str, _Component]:
+    """Group correlated cumulative windows before fruiting-score weighting."""
+
+    return {
+        group_name: _preference_component(
+            features,
+            window_weights,
+            {
+                feature_name: config.rainfall_preferences[feature_name]
+                for feature_name in window_weights
+            },
+        )
+        for group_name, window_weights in config.rainfall_group_windows.items()
+    }
+
+
+def _weather_completeness(
+    weather: FeatureSnapshot[DynamicWeatherFeatures],
+) -> dict[str, str]:
+    return {
+        name: str(provenance.details["coverage_status"])
+        for name, provenance in weather.feature_provenance.items()
+        if "coverage_status" in provenance.details
+    }
 
 
 def _combine_components(
@@ -144,6 +216,32 @@ class RuleBasedScoringEngine:
         habitat: FeatureSnapshot[StaticHabitatFeatures],
         weather: FeatureSnapshot[DynamicWeatherFeatures],
     ) -> ModelResult:
+        habitat_exclusions = collect_habitat_exclusions(habitat)
+        if habitat_exclusions:
+            return ModelResult(
+                species=species,
+                location=location,
+                date=target_date,
+                habitat_score=None,
+                fruiting_score=None,
+                final_score=None,
+                confidence=0.0,
+                factors={},
+                missing_features=(),
+                data_sources={
+                    "habitat": habitat.metadata.source_name,
+                    "weather": weather.metadata.source_name,
+                },
+                feature_provenance={
+                    **habitat.feature_provenance,
+                    **weather.feature_provenance,
+                },
+                score_type="excluded_habitat_no_suitability_index_v0",
+                eligibility_status="excluded",
+                habitat_exclusions=habitat_exclusions,
+                weather_completeness=_weather_completeness(weather),
+            )
+
         config = get_species_config(species)
         habitat_components = {
             "forest": _preference_component(
@@ -159,28 +257,20 @@ class RuleBasedScoringEngine:
                 habitat.features, config.terrain_weights, config.terrain_preferences
             ),
             "soil": _soil_component(habitat.features, config),
-            "static_wetness": _static_wetness_component(habitat.features, config),
+            "static_wetness": _static_wetness_component(habitat, config),
         }
+        rain_components = _rain_components(weather.features, config)
         fruiting_components = {
-            "rain_history": _preference_component(
-                weather.features, config.rainfall_weights, config.rainfall_preferences
-            ),
-            "recent_moisture": _preference_component(
-                weather.features,
-                {"estimated_current_soil_moisture_index": 1.0},
-                {
-                    "estimated_current_soil_moisture_index": (
-                        config.recent_moisture_preference
-                    )
-                },
-            ),
+            **rain_components,
             "temperature": _preference_component(
                 weather.features, config.temperature_weights, config.temperature_preferences
             ),
-            "season": _season_component(target_date, config),
-            "drought": _preference_component(
-                weather.features, config.drought_weights, config.drought_preferences
+            "relative_humidity": _preference_component(
+                weather.features,
+                config.relative_humidity_weights,
+                config.relative_humidity_preferences,
             ),
+            "season": _season_component(target_date, config),
         }
 
         habitat_weights = dict(config.habitat_component_weights)
@@ -228,6 +318,15 @@ class RuleBasedScoringEngine:
             for name, component in {**habitat_components, **fruiting_components}.items()
             if component.score is not None
         }
+        precipitation_score, _, _ = _combine_components(
+            rain_components,
+            {
+                name: config.fruiting_component_weights[name]
+                for name in rain_components
+            },
+        )
+        if precipitation_score is not None:
+            factor_scores["precipitation"] = round(precipitation_score, 6)
 
         return ModelResult(
             species=species,
@@ -247,4 +346,5 @@ class RuleBasedScoringEngine:
                 **habitat.feature_provenance,
                 **weather.feature_provenance,
             },
+            weather_completeness=_weather_completeness(weather),
         )

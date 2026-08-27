@@ -1,0 +1,502 @@
+{
+  "filename": "NMD2023bas_v2_1.tif",
+  "path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\base_layer\\NMD2023bas_v2_1.tif",
+  "file_size_bytes": 10852673468,
+  "file_size_human": "10.11 GiB",
+  "driver": "GTiff",
+  "crs": "EPSG:3006",
+  "epsg": 3006,
+  "width": 71273,
+  "height": 157991,
+  "band_count": 1,
+  "pixel_resolution": {
+    "x": 10.0,
+    "y": 10.0
+  },
+  "bounds": {
+    "left": 208450.0,
+    "bottom": 6091140.0,
+    "right": 921180.0,
+    "top": 7671050.0
+  },
+  "transform": {
+    "a": 10.0,
+    "b": 0.0,
+    "c": 208450.0,
+    "d": 0.0,
+    "e": -10.0,
+    "f": 7671050.0,
+    "gdal": [
+      208450.0,
+      10.0,
+      0.0,
+      7671050.0,
+      0.0,
+      -10.0
+    ]
+  },
+  "dtypes": [
+    "uint16"
+  ],
+  "nodata_value": null,
+  "nodata_values_by_band": [
+    null
+  ],
+  "band_descriptions": [
+    null
+  ],
+  "units": [
+    null
+  ],
+  "tags": {
+    "default": {
+      "DataType": "Generic",
+      "AREA_OR_POINT": "Area"
+    },
+    "DERIVED_SUBDATASETS": {
+      "DERIVED_SUBDATASET_1_NAME": "DERIVED_SUBDATASET:LOGAMPLITUDE:C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\base_layer\\NMD2023bas_v2_1.tif",
+      "DERIVED_SUBDATASET_1_DESC": "log10 of amplitude of input bands from C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\base_layer\\NMD2023bas_v2_1.tif"
+    },
+    "Esri": {
+      "PyramidResamplingType": "NEAREST"
+    },
+    "IMAGE_STRUCTURE": {
+      "COMPRESSION": "PACKBITS",
+      "INTERLEAVE": "BAND"
+    }
+  },
+  "band_tags": {
+    "1": {
+      "default": {
+        "RepresentationType": "THEMATIC",
+        "STATISTICS_COVARIANCES": "267420.4767575511",
+        "STATISTICS_MAXIMUM": "4233",
+        "STATISTICS_MEAN": "107.0323641973",
+        "STATISTICS_MINIMUM": "0",
+        "STATISTICS_SKIPFACTORX": "1",
+        "STATISTICS_SKIPFACTORY": "1",
+        "STATISTICS_STDDEV": "517.12713790474"
+      }
+    }
+  },
+  "compression": "PACKBITS",
+  "is_tiled": true,
+  "block_sizes": [
+    {
+      "band": 1,
+      "height": 128,
+      "width": 128
+    }
+  ],
+  "overview_levels": {
+    "1": [
+      2,
+      4,
+      8,
+      16,
+      32,
+      64,
+      128,
+      255,
+      509
+    ]
+  },
+  "has_overviews": true,
+  "statistics": {
+    "mode": "approximate_downsampled",
+    "are_approximate": true,
+    "approximate_fields": [
+      "all_statistics"
+    ],
+    "source_pixels_per_band": 11260492543,
+    "source_pixels_total": 11260492543,
+    "sample_shape_per_band": {
+      "height": 1488,
+      "width": 671
+    },
+    "sampling_resampling": "nearest",
+    "memory_safety": "Reads at most 1024x1024 source pixels at once during an exact scan; large rasters use a maximum 1000000-pixel grid per band.",
+    "bands": [
+      {
+        "band": 1,
+        "minimum": 0.0,
+        "maximum": 4233.0,
+        "mean": 106.86090512475361,
+        "standard_deviation": 516.3477964399709,
+        "percentiles": {
+          "1": 0.0,
+          "5": 0.0,
+          "25": 0.0,
+          "50": 0.0,
+          "75": 111.0,
+          "95": 122.0,
+          "99": 4222.0
+        },
+        "percentiles_are_approximate": true,
+        "nodata_percentage": 0.0,
+        "valid_percentage": 100.0,
+        "non_finite_percentage": 0.0,
+        "pixel_percentages_are_approximate": true,
+        "examined_pixel_count": 998448,
+        "valid_examined_pixel_count": 998448,
+        "nodata_examined_pixel_count": 0,
+        "sample_of_valid_values": [
+          0.0,
+          112.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          62.0,
+          0.0,
+          62.0,
+          0.0,
+          62.0,
+          121.0,
+          0.0,
+          3.0,
+          62.0,
+          0.0,
+          0.0,
+          3.0,
+          0.0,
+          0.0
+        ],
+        "requested_valid_value_sample_size": 20,
+        "class_distribution": {
+          "status": "available",
+          "unique_valid_values": [
+            0,
+            3,
+            23,
+            43,
+            51,
+            52,
+            53,
+            54,
+            61,
+            62,
+            111,
+            112,
+            113,
+            114,
+            115,
+            116,
+            117,
+            118,
+            121,
+            122,
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            200,
+            211,
+            212,
+            213,
+            214,
+            215,
+            216,
+            217,
+            218,
+            221,
+            222,
+            223,
+            224,
+            225,
+            226,
+            227,
+            411,
+            4211,
+            4212,
+            4213,
+            4221,
+            4222,
+            4223,
+            4231,
+            4232,
+            4233
+          ],
+          "classes": [
+            {
+              "value": 0,
+              "sample_count": 530663,
+              "percentage_of_valid": 53.148786917295645
+            },
+            {
+              "value": 3,
+              "sample_count": 22526,
+              "percentage_of_valid": 2.256101469480634
+            },
+            {
+              "value": 23,
+              "sample_count": 1014,
+              "percentage_of_valid": 0.10155761742223932
+            },
+            {
+              "value": 43,
+              "sample_count": 1431,
+              "percentage_of_valid": 0.1433224364213259
+            },
+            {
+              "value": 51,
+              "sample_count": 944,
+              "percentage_of_valid": 0.09454673653510248
+            },
+            {
+              "value": 52,
+              "sample_count": 938,
+              "percentage_of_valid": 0.09394580388763361
+            },
+            {
+              "value": 53,
+              "sample_count": 7079,
+              "percentage_of_valid": 0.7090003685720238
+            },
+            {
+              "value": 54,
+              "sample_count": 183,
+              "percentage_of_valid": 0.018328445747800588
+            },
+            {
+              "value": 61,
+              "sample_count": 29195,
+              "percentage_of_valid": 2.9240381071422847
+            },
+            {
+              "value": 62,
+              "sample_count": 138127,
+              "percentage_of_valid": 13.83417063282214
+            },
+            {
+              "value": 111,
+              "sample_count": 60287,
+              "percentage_of_valid": 6.038071086325978
+            },
+            {
+              "value": 112,
+              "sample_count": 33768,
+              "percentage_of_valid": 3.3820489399548097
+            },
+            {
+              "value": 113,
+              "sample_count": 27858,
+              "percentage_of_valid": 2.790130282197971
+            },
+            {
+              "value": 114,
+              "sample_count": 23898,
+              "percentage_of_valid": 2.393514734868516
+            },
+            {
+              "value": 115,
+              "sample_count": 16849,
+              "percentage_of_valid": 1.6875190295338365
+            },
+            {
+              "value": 116,
+              "sample_count": 4350,
+              "percentage_of_valid": 0.435676169414932
+            },
+            {
+              "value": 117,
+              "sample_count": 2069,
+              "percentage_of_valid": 0.20722160793551592
+            },
+            {
+              "value": 118,
+              "sample_count": 33110,
+              "percentage_of_valid": 3.3161466596157236
+            },
+            {
+              "value": 121,
+              "sample_count": 11333,
+              "percentage_of_valid": 1.1350616156274538
+            },
+            {
+              "value": 122,
+              "sample_count": 2376,
+              "percentage_of_valid": 0.23796932839767318
+            },
+            {
+              "value": 123,
+              "sample_count": 3169,
+              "percentage_of_valid": 0.31739259330480907
+            },
+            {
+              "value": 124,
+              "sample_count": 4167,
+              "percentage_of_valid": 0.4173477236671314
+            },
+            {
+              "value": 125,
+              "sample_count": 3951,
+              "percentage_of_valid": 0.395714148358252
+            },
+            {
+              "value": 126,
+              "sample_count": 11,
+              "percentage_of_valid": 0.0011017098536929314
+            },
+            {
+              "value": 127,
+              "sample_count": 49,
+              "percentage_of_valid": 0.004907616620995785
+            },
+            {
+              "value": 128,
+              "sample_count": 936,
+              "percentage_of_valid": 0.09374549300514398
+            },
+            {
+              "value": 200,
+              "sample_count": 4353,
+              "percentage_of_valid": 0.4359766357386664
+            },
+            {
+              "value": 211,
+              "sample_count": 4169,
+              "percentage_of_valid": 0.417548034549621
+            },
+            {
+              "value": 212,
+              "sample_count": 2082,
+              "percentage_of_valid": 0.20852362867169846
+            },
+            {
+              "value": 213,
+              "sample_count": 4634,
+              "percentage_of_valid": 0.46412031472845855
+            },
+            {
+              "value": 214,
+              "sample_count": 304,
+              "percentage_of_valid": 0.030447254138422832
+            },
+            {
+              "value": 215,
+              "sample_count": 391,
+              "percentage_of_valid": 0.03916077752672147
+            },
+            {
+              "value": 216,
+              "sample_count": 1244,
+              "percentage_of_valid": 0.12459336890854607
+            },
+            {
+              "value": 217,
+              "sample_count": 2533,
+              "percentage_of_valid": 0.2536937326731087
+            },
+            {
+              "value": 218,
+              "sample_count": 7,
+              "percentage_of_valid": 0.0007010880887136836
+            },
+            {
+              "value": 221,
+              "sample_count": 758,
+              "percentage_of_valid": 0.07591782446356746
+            },
+            {
+              "value": 222,
+              "sample_count": 120,
+              "percentage_of_valid": 0.012018652949377434
+            },
+            {
+              "value": 223,
+              "sample_count": 434,
+              "percentage_of_valid": 0.04346746150024838
+            },
+            {
+              "value": 224,
+              "sample_count": 208,
+              "percentage_of_valid": 0.020832331778920885
+            },
+            {
+              "value": 225,
+              "sample_count": 388,
+              "percentage_of_valid": 0.03886031120298704
+            },
+            {
+              "value": 226,
+              "sample_count": 81,
+              "percentage_of_valid": 0.008112590740829768
+            },
+            {
+              "value": 227,
+              "sample_count": 250,
+              "percentage_of_valid": 0.025038860311202987
+            },
+            {
+              "value": 411,
+              "sample_count": 933,
+              "percentage_of_valid": 0.09344502668140955
+            },
+            {
+              "value": 4211,
+              "sample_count": 378,
+              "percentage_of_valid": 0.03785875679053892
+            },
+            {
+              "value": 4212,
+              "sample_count": 1021,
+              "percentage_of_valid": 0.102258705510953
+            },
+            {
+              "value": 4213,
+              "sample_count": 777,
+              "percentage_of_valid": 0.07782077784721889
+            },
+            {
+              "value": 4221,
+              "sample_count": 1213,
+              "percentage_of_valid": 0.12148855022995689
+            },
+            {
+              "value": 4222,
+              "sample_count": 2796,
+              "percentage_of_valid": 0.2800346137204942
+            },
+            {
+              "value": 4223,
+              "sample_count": 1866,
+              "percentage_of_valid": 0.1868900533628191
+            },
+            {
+              "value": 4231,
+              "sample_count": 610,
+              "percentage_of_valid": 0.06109481915933529
+            },
+            {
+              "value": 4232,
+              "sample_count": 2906,
+              "percentage_of_valid": 0.29105171225742354
+            },
+            {
+              "value": 4233,
+              "sample_count": 3711,
+              "percentage_of_valid": 0.3716768424594971
+            }
+          ],
+          "is_approximate": true,
+          "valid_pixels_counted": 998448
+        }
+      }
+    ]
+  },
+  "preview": {
+    "path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\reports\\raster_inspection\\NMD2023bas_v2_1_preview.png",
+    "source_band": 1,
+    "width": 461,
+    "height": 1024,
+    "resampling": "nearest",
+    "display_scaling": "linear_min_max_of_preview_sample",
+    "display_minimum": 0.0,
+    "display_maximum": 4233.0,
+    "note": "Visualization only. Display scaling affects the PNG, not the source raster; no semantic interpretation was applied."
+  },
+  "json_report_path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\reports\\raster_inspection\\NMD2023bas_v2_1.json"
+}

@@ -85,7 +85,7 @@ def test_missing_features_are_reported_and_reduce_confidence() -> None:
     result = service.get_score(59.4, 18.1, "2026-08-23", "cantharellus_cibarius")
 
     assert "canopy_density_fraction" in result.missing_features
-    assert "mean_temperature_c" in result.missing_features
+    assert "temp_mean_7d_c" in result.missing_features
     assert result.confidence < 0.5
     assert 0 <= result.final_score <= 1
 

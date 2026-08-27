@@ -1,0 +1,166 @@
+{
+  "filename": "m659_67.tif",
+  "path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\elevation\\m659_67.tif",
+  "file_size_bytes": 272835442,
+  "file_size_human": "260.20 MiB",
+  "driver": "GTiff",
+  "crs": "EPSG:5845",
+  "epsg": 5845,
+  "width": 10000,
+  "height": 10000,
+  "band_count": 1,
+  "pixel_resolution": {
+    "x": 1.0,
+    "y": 1.0
+  },
+  "bounds": {
+    "left": 670000.0,
+    "bottom": 6590000.0,
+    "right": 680000.0,
+    "top": 6600000.0
+  },
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 670000.0,
+    "d": 0.0,
+    "e": -1.0,
+    "f": 6600000.0,
+    "gdal": [
+      670000.0,
+      1.0,
+      0.0,
+      6600000.0,
+      0.0,
+      -1.0
+    ]
+  },
+  "dtypes": [
+    "float32"
+  ],
+  "nodata_value": -9999.0,
+  "nodata_values_by_band": [
+    -9999.0
+  ],
+  "band_descriptions": [
+    null
+  ],
+  "units": [
+    "metre"
+  ],
+  "tags": {
+    "default": {
+      "OVERVIEW_RESAMPLING": "BILINEAR",
+      "AREA_OR_POINT": "Area"
+    },
+    "DERIVED_SUBDATASETS": {
+      "DERIVED_SUBDATASET_1_NAME": "DERIVED_SUBDATASET:LOGAMPLITUDE:C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\elevation\\m659_67.tif",
+      "DERIVED_SUBDATASET_1_DESC": "log10 of amplitude of input bands from C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\elevation\\m659_67.tif"
+    },
+    "IMAGE_STRUCTURE": {
+      "LAYOUT": "COG",
+      "COMPRESSION": "DEFLATE",
+      "INTERLEAVE": "BAND",
+      "PREDICTOR": "3"
+    }
+  },
+  "band_tags": {
+    "1": {}
+  },
+  "compression": "DEFLATE",
+  "is_tiled": true,
+  "block_sizes": [
+    {
+      "band": 1,
+      "height": 512,
+      "width": 512
+    }
+  ],
+  "overview_levels": {
+    "1": [
+      2,
+      4,
+      8,
+      16,
+      32
+    ]
+  },
+  "has_overviews": true,
+  "statistics": {
+    "mode": "approximate_downsampled",
+    "are_approximate": true,
+    "approximate_fields": [
+      "all_statistics"
+    ],
+    "source_pixels_per_band": 100000000,
+    "source_pixels_total": 100000000,
+    "sample_shape_per_band": {
+      "height": 1000,
+      "width": 1000
+    },
+    "sampling_resampling": "nearest",
+    "memory_safety": "Reads at most 1024x1024 source pixels at once during an exact scan; large rasters use a maximum 1000000-pixel grid per band.",
+    "bands": [
+      {
+        "band": 1,
+        "minimum": -0.2230789214372635,
+        "maximum": 96.26072692871094,
+        "mean": 20.04266350903254,
+        "standard_deviation": 12.902417065229804,
+        "percentiles": {
+          "1": 0.10000000149011612,
+          "5": 0.10000000149011612,
+          "25": 11.316933393478394,
+          "50": 19.5091552734375,
+          "75": 28.87226915359497,
+          "95": 42.32958164215088,
+          "99": 50.54702018737793
+        },
+        "percentiles_are_approximate": true,
+        "nodata_percentage": 0.0,
+        "valid_percentage": 100.0,
+        "non_finite_percentage": 0.0,
+        "pixel_percentages_are_approximate": true,
+        "examined_pixel_count": 1000000,
+        "valid_examined_pixel_count": 1000000,
+        "nodata_examined_pixel_count": 0,
+        "sample_of_valid_values": [
+          34.75297164916992,
+          12.552325248718262,
+          0.10000000149011612,
+          37.54889678955078,
+          26.19304084777832,
+          20.446292877197266,
+          8.09000015258789,
+          9.080348014831543,
+          10.625810623168945,
+          24.036170959472656,
+          19.272903442382812,
+          23.026735305786133,
+          0.10000000149011612,
+          16.970346450805664,
+          27.82854461669922,
+          7.056225299835205,
+          22.372167587280273,
+          0.27078935503959656,
+          40.060630798339844,
+          39.44984436035156
+        ],
+        "requested_valid_value_sample_size": 20,
+        "class_distribution": null
+      }
+    ]
+  },
+  "preview": {
+    "path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\reports\\raster_inspection\\m659_67_preview.png",
+    "source_band": 1,
+    "width": 1024,
+    "height": 1024,
+    "resampling": "nearest",
+    "display_scaling": "linear_min_max_of_preview_sample",
+    "display_minimum": -0.2230789214372635,
+    "display_maximum": 96.17005157470703,
+    "note": "Visualization only. Display scaling affects the PNG, not the source raster; no semantic interpretation was applied."
+  },
+  "json_report_path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\reports\\raster_inspection\\m659_67.json"
+}

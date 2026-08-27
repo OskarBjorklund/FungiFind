@@ -1,6 +1,6 @@
 {
   "filename": "SLUMarkfuktighetKlassad.tif",
-  "path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif",
+  "path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif",
   "file_size_bytes": 8440050454,
   "file_size_human": "7.86 GiB",
   "driver": "GTiff",
@@ -54,8 +54,8 @@
       "AREA_OR_POINT": "Area"
     },
     "DERIVED_SUBDATASETS": {
-      "DERIVED_SUBDATASET_1_NAME": "DERIVED_SUBDATASET:LOGAMPLITUDE:C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif",
-      "DERIVED_SUBDATASET_1_DESC": "log10 of amplitude of input bands from C:\\Users\\oskar\\Documents\\App\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif"
+      "DERIVED_SUBDATASET_1_NAME": "DERIVED_SUBDATASET:LOGAMPLITUDE:C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif",
+      "DERIVED_SUBDATASET_1_DESC": "log10 of amplitude of input bands from C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\src\\data\\misc_data\\SLUMarkfuktighetKlassad.tif"
     },
     "Esri": {
       "PyramidResamplingType": "NEAREST"
@@ -183,7 +183,7 @@
     ]
   },
   "preview": {
-    "path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\reports\\raster_inspection\\SLUMarkfuktighetKlassad_preview.png",
+    "path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\reports\\raster_inspection\\SLUMarkfuktighetKlassad_preview.png",
     "source_band": 1,
     "width": 432,
     "height": 1023,
@@ -193,5 +193,5 @@
     "display_maximum": 4.0,
     "note": "Visualization only. Display scaling affects the PNG, not the source raster; no semantic interpretation was applied."
   },
-  "json_report_path": "C:\\Users\\oskar\\Documents\\App\\FungiFind\\reports\\raster_inspection\\SLUMarkfuktighetKlassad.json"
+  "json_report_path": "C:\\Users\\oskar\\Documents\\GitHub\\OskarBjorklund\\FungiFind\\reports\\raster_inspection\\SLUMarkfuktighetKlassad.json"
 }

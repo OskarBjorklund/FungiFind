@@ -75,7 +75,7 @@ def _serialized_nodata(value: Any) -> float | int | str | None:
     return scalar
 
 
-def _epsg_code(crs: rasterio.crs.CRS) -> int | None:
+def raster_epsg_code(crs: rasterio.crs.CRS) -> int | None:
     """Use the embedded WKT authority when Rasterio's strict lookup returns None."""
 
     direct = crs.to_epsg()
@@ -84,8 +84,24 @@ def _epsg_code(crs: rasterio.crs.CRS) -> int | None:
     return PyprojCRS.from_wkt(crs.to_wkt()).to_epsg(min_confidence=20)
 
 
-def _grid_signature(dataset: rasterio.io.DatasetReader) -> str:
-    epsg = _epsg_code(dataset.crs) if dataset.crs else None
+def horizontal_crs(crs: rasterio.crs.CRS | PyprojCRS | str) -> PyprojCRS:
+    """Return the horizontal part used for 2D WGS84-to-grid transformations."""
+
+    parsed = PyprojCRS.from_user_input(crs)
+    if not parsed.is_compound:
+        return parsed
+    horizontal_parts = [
+        part for part in parsed.sub_crs_list if part.is_projected or part.is_geographic
+    ]
+    if len(horizontal_parts) != 1:
+        raise RasterPointError(
+            f"Compound CRS {parsed.name!r} has {len(horizontal_parts)} horizontal parts"
+        )
+    return horizontal_parts[0]
+
+
+def raster_grid_signature(dataset: rasterio.io.DatasetReader) -> str:
+    epsg = raster_epsg_code(dataset.crs) if dataset.crs else None
     payload = {
         "crs": f"EPSG:{epsg}" if epsg is not None else dataset.crs.to_wkt(),
         # GeoTIFF WKT/affine serialization can contain sub-nanometre floating
@@ -121,7 +137,11 @@ class RasterPointReader:
                     f"Raster has {dataset.count} band(s); requested band {self.band}"
                 )
 
-            transformer = Transformer.from_crs(WGS84_CRS, dataset.crs, always_xy=True)
+            transformer = Transformer.from_crs(
+                WGS84_CRS,
+                horizontal_crs(dataset.crs),
+                always_xy=True,
+            )
             projected_x, projected_y = transformer.transform(
                 location.longitude,
                 location.latitude,
@@ -161,7 +181,7 @@ class RasterPointReader:
                 raw_value=raw_value,
                 is_nodata=is_nodata,
                 source_crs=crs_text,
-                source_epsg=_epsg_code(dataset.crs),
+                source_epsg=raster_epsg_code(dataset.crs),
                 projected_x=float(projected_x),
                 projected_y=float(projected_y),
                 pixel_row=int(row),
@@ -169,5 +189,5 @@ class RasterPointReader:
                 source_path=str(self.raster_path),
                 band=self.band,
                 nodata_value=_serialized_nodata(dataset.nodatavals[self.band - 1]),
-                grid_signature=_grid_signature(dataset),
+                grid_signature=raster_grid_signature(dataset),
             )

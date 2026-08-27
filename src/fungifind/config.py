@@ -49,14 +49,16 @@ class SpeciesConfig:
     terrain_weights: Mapping[str, float]
     terrain_preferences: Mapping[str, TrapezoidPreference]
     soil_affinities: Mapping[SoilType, float]
-    rainfall_weights: Mapping[str, float]
+    rainfall_group_windows: Mapping[str, Mapping[str, float]]
     rainfall_preferences: Mapping[str, TrapezoidPreference]
-    recent_moisture_preference: TrapezoidPreference
     temperature_weights: Mapping[str, float]
     temperature_preferences: Mapping[str, TrapezoidPreference]
+    relative_humidity_weights: Mapping[str, float]
+    relative_humidity_preferences: Mapping[str, TrapezoidPreference]
     season_preference: TrapezoidPreference
-    drought_weights: Mapping[str, float]
-    drought_preferences: Mapping[str, TrapezoidPreference]
+    fruiting_v2_component_weights: Mapping[str, float]
+    current_soil_moisture_preference: TrapezoidPreference
+    dry_spell_scoring_enabled: bool
 
 
 # All values below are preliminary biological assumptions for a software prototype.
@@ -72,21 +74,19 @@ _COMMON_HABITAT_WEIGHTS = {
     "soil": 0.1275,
     "static_wetness": 0.15,
 }
-_COMMON_FRUITING_WEIGHTS = {
-    "rain_history": 0.30,
-    "recent_moisture": 0.24,
-    "temperature": 0.20,
-    "season": 0.16,
-    "drought": 0.10,
-}
-
-
 SPECIES_CONFIGS: Mapping[Species, SpeciesConfig] = {
     Species.CANTHARELLUS_CIBARIUS: SpeciesConfig(
         species=Species.CANTHARELLUS_CIBARIUS,
         common_name_sv="kantarell",
         habitat_component_weights=_COMMON_HABITAT_WEIGHTS,
-        fruiting_component_weights=_COMMON_FRUITING_WEIGHTS,
+        fruiting_component_weights={
+            "recent_rain": 0.10,
+            "medium_term_rain": 0.22,
+            "background_rain": 0.13,
+            "temperature": 0.30,
+            "relative_humidity": 0.10,
+            "season": 0.15,
+        },
         final_habitat_weight=0.60,
         forest_weights={"forest_cover_fraction": 0.60, "canopy_density_fraction": 0.40},
         forest_preferences={
@@ -125,43 +125,65 @@ SPECIES_CONFIGS: Mapping[Species, SpeciesConfig] = {
             SoilType.BEDROCK: 0.35,
             SoilType.UNKNOWN: 0.50,
         },
-        rainfall_weights={
-            "rainfall_3d_mm": 0.10,
-            "rainfall_7d_mm": 0.25,
-            "rainfall_14d_mm": 0.35,
-            "rainfall_21d_mm": 0.20,
-            "rainfall_30d_mm": 0.10,
+        rainfall_group_windows={
+            "recent_rain": {"rainfall_1d_mm": 0.35, "rainfall_3d_mm": 0.65},
+            "medium_term_rain": {"rainfall_7d_mm": 0.45, "rainfall_14d_mm": 0.55},
+            "background_rain": {"rainfall_21d_mm": 0.45, "rainfall_30d_mm": 0.55},
         },
         rainfall_preferences={
+            "rainfall_1d_mm": TrapezoidPreference(0.0, 2.0, 10.0, 30.0),
             "rainfall_3d_mm": TrapezoidPreference(0.0, 4.0, 20.0, 55.0),
             "rainfall_7d_mm": TrapezoidPreference(2.0, 14.0, 42.0, 90.0),
             "rainfall_14d_mm": TrapezoidPreference(8.0, 30.0, 75.0, 150.0),
             "rainfall_21d_mm": TrapezoidPreference(12.0, 42.0, 105.0, 210.0),
             "rainfall_30d_mm": TrapezoidPreference(18.0, 55.0, 145.0, 280.0),
         },
-        recent_moisture_preference=TrapezoidPreference(0.18, 0.48, 0.82, 0.98),
         temperature_weights={
-            "mean_temperature_c": 0.60,
-            "min_temperature_c": 0.20,
-            "max_temperature_c": 0.20,
+            "temp_mean_3d_c": 0.20,
+            "temp_mean_7d_c": 0.50,
+            "temp_mean_14d_c": 0.30,
         },
         temperature_preferences={
-            "mean_temperature_c": TrapezoidPreference(4.0, 10.0, 17.0, 24.0),
-            "min_temperature_c": TrapezoidPreference(-1.0, 5.0, 13.0, 18.0),
-            "max_temperature_c": TrapezoidPreference(9.0, 15.0, 23.0, 31.0),
+            "temp_mean_3d_c": TrapezoidPreference(4.0, 10.0, 18.0, 25.0),
+            "temp_mean_7d_c": TrapezoidPreference(4.0, 9.0, 17.0, 24.0),
+            "temp_mean_14d_c": TrapezoidPreference(3.0, 8.0, 16.0, 23.0),
+        },
+        relative_humidity_weights={
+            "relative_humidity_mean_3d_percent": 0.40,
+            "relative_humidity_mean_7d_percent": 0.60,
+        },
+        relative_humidity_preferences={
+            "relative_humidity_mean_3d_percent": TrapezoidPreference(
+                35.0, 70.0, 100.0, 100.0
+            ),
+            "relative_humidity_mean_7d_percent": TrapezoidPreference(
+                35.0, 68.0, 100.0, 100.0
+            ),
         },
         season_preference=TrapezoidPreference(175, 215, 275, 315),
-        drought_weights={"dry_days_count_14d": 0.70, "evapotranspiration_7d_mm": 0.30},
-        drought_preferences={
-            "dry_days_count_14d": TrapezoidPreference(0.0, 0.0, 4.0, 14.0),
-            "evapotranspiration_7d_mm": TrapezoidPreference(0.0, 4.0, 20.0, 42.0),
+        fruiting_v2_component_weights={
+            "current_soil_moisture": 0.45,
+            "temperature": 0.25,
+            "season": 0.20,
+            "recent_rain_trigger": 0.10,
         },
+        # Preliminary biological assumption: moderate-to-fairly-moist soil is
+        # preferred; near-saturation is deliberately outside the optimum.
+        current_soil_moisture_preference=TrapezoidPreference(0.18, 0.45, 0.72, 0.92),
+        dry_spell_scoring_enabled=False,
     ),
     Species.CRATERELLUS_TUBAEFORMIS: SpeciesConfig(
         species=Species.CRATERELLUS_TUBAEFORMIS,
         common_name_sv="trattkantarell",
         habitat_component_weights=_COMMON_HABITAT_WEIGHTS,
-        fruiting_component_weights=_COMMON_FRUITING_WEIGHTS,
+        fruiting_component_weights={
+            "recent_rain": 0.08,
+            "medium_term_rain": 0.20,
+            "background_rain": 0.17,
+            "temperature": 0.28,
+            "relative_humidity": 0.12,
+            "season": 0.15,
+        },
         final_habitat_weight=0.55,
         forest_weights={"forest_cover_fraction": 0.55, "canopy_density_fraction": 0.45},
         forest_preferences={
@@ -200,37 +222,52 @@ SPECIES_CONFIGS: Mapping[Species, SpeciesConfig] = {
             SoilType.BEDROCK: 0.28,
             SoilType.UNKNOWN: 0.50,
         },
-        rainfall_weights={
-            "rainfall_3d_mm": 0.05,
-            "rainfall_7d_mm": 0.18,
-            "rainfall_14d_mm": 0.32,
-            "rainfall_21d_mm": 0.27,
-            "rainfall_30d_mm": 0.18,
+        rainfall_group_windows={
+            "recent_rain": {"rainfall_1d_mm": 0.30, "rainfall_3d_mm": 0.70},
+            "medium_term_rain": {"rainfall_7d_mm": 0.40, "rainfall_14d_mm": 0.60},
+            "background_rain": {"rainfall_21d_mm": 0.40, "rainfall_30d_mm": 0.60},
         },
         rainfall_preferences={
+            "rainfall_1d_mm": TrapezoidPreference(0.0, 1.5, 10.0, 30.0),
             "rainfall_3d_mm": TrapezoidPreference(0.0, 3.0, 22.0, 60.0),
             "rainfall_7d_mm": TrapezoidPreference(3.0, 16.0, 48.0, 100.0),
             "rainfall_14d_mm": TrapezoidPreference(10.0, 36.0, 90.0, 175.0),
             "rainfall_21d_mm": TrapezoidPreference(16.0, 52.0, 130.0, 240.0),
             "rainfall_30d_mm": TrapezoidPreference(22.0, 70.0, 175.0, 320.0),
         },
-        recent_moisture_preference=TrapezoidPreference(0.25, 0.58, 0.90, 1.00),
         temperature_weights={
-            "mean_temperature_c": 0.60,
-            "min_temperature_c": 0.20,
-            "max_temperature_c": 0.20,
+            "temp_mean_3d_c": 0.15,
+            "temp_mean_7d_c": 0.45,
+            "temp_mean_14d_c": 0.40,
         },
         temperature_preferences={
-            "mean_temperature_c": TrapezoidPreference(0.0, 6.0, 13.5, 20.0),
-            "min_temperature_c": TrapezoidPreference(-5.0, 1.0, 9.0, 15.0),
-            "max_temperature_c": TrapezoidPreference(5.0, 10.0, 19.0, 27.0),
+            "temp_mean_3d_c": TrapezoidPreference(-1.0, 5.0, 14.0, 21.0),
+            "temp_mean_7d_c": TrapezoidPreference(-1.0, 5.0, 13.5, 20.0),
+            "temp_mean_14d_c": TrapezoidPreference(-2.0, 4.0, 13.0, 19.0),
+        },
+        relative_humidity_weights={
+            "relative_humidity_mean_3d_percent": 0.35,
+            "relative_humidity_mean_7d_percent": 0.65,
+        },
+        relative_humidity_preferences={
+            "relative_humidity_mean_3d_percent": TrapezoidPreference(
+                40.0, 75.0, 100.0, 100.0
+            ),
+            "relative_humidity_mean_7d_percent": TrapezoidPreference(
+                40.0, 73.0, 100.0, 100.0
+            ),
         },
         season_preference=TrapezoidPreference(225, 255, 305, 340),
-        drought_weights={"dry_days_count_14d": 0.75, "evapotranspiration_7d_mm": 0.25},
-        drought_preferences={
-            "dry_days_count_14d": TrapezoidPreference(0.0, 0.0, 3.0, 12.0),
-            "evapotranspiration_7d_mm": TrapezoidPreference(0.0, 3.0, 16.0, 35.0),
+        fruiting_v2_component_weights={
+            "current_soil_moisture": 0.50,
+            "temperature": 0.22,
+            "season": 0.18,
+            "recent_rain_trigger": 0.10,
         },
+        # Preliminary biological assumption: the optimum is shifted toward
+        # wetter soil than for C. cibarius, but not to saturated conditions.
+        current_soil_moisture_preference=TrapezoidPreference(0.25, 0.55, 0.82, 0.97),
+        dry_spell_scoring_enabled=False,
     ),
 }
 

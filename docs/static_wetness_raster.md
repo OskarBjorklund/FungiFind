@@ -112,8 +112,8 @@ Vid `59.412, 18.132` (klass 4) blev effekten:
 
 | Art | Habitat före → efter | Final före → efter | Confidence |
 |---|---|---|---:|
-| Cantharellus cibarius | 0,927532 → 0,788402 | 0,950919 → 0,867441 | 0,410 |
-| Craterellus tubaeformis | 0,918040 → 0,780334 | 0,875699 → 0,799961 | 0,405 |
+| Cantharellus cibarius | 0,951268 → 0,808578 | 0,965161 → 0,879547 | 0,410 |
+| Craterellus tubaeformis | 0,938176 → 0,797450 | 0,886774 → 0,809374 | 0,405 |
 
 `confidence` är oförändrat eftersom nuvarande hybridpolicy fortfarande använder
 den konservativa mockkvaliteten på habitatnivå.

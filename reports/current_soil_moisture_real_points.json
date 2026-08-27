@@ -1,0 +1,256 @@
+{
+  "estimator_version": "current_soil_moisture_heuristic_v1",
+  "target_date": "2026-08-27",
+  "point_count": 5,
+  "points": [
+    {
+      "label": "dry_coarse_mineral",
+      "latitude": 59.166136,
+      "longitude": 18.242348,
+      "target_date": "2026-08-27",
+      "mesan_grid_latitude": 59.169136,
+      "mesan_grid_longitude": 18.237348,
+      "mesan_grid_distance_m": 438.722,
+      "inputs": {
+        "static_wetness_class": 1,
+        "soil_group": "coarse_mineral",
+        "slope_degrees": null,
+        "rain_3d_mm": 0.031837959289550785,
+        "rain_7d_mm": 8.849137802124023,
+        "rain_14d_mm": 12.296584148406982,
+        "rain_30d_mm": 18.57585050582886,
+        "temp_mean_7d_c": 14.846617744082462,
+        "relative_humidity_mean_7d": 78.966085127067
+      },
+      "moisture": {
+        "baseline_wetness": 0.3,
+        "rain_recharge": 0.110948,
+        "drying_pressure": 0.356562,
+        "soil_retention": 0.25,
+        "terrain_retention": null,
+        "estimated_current_soil_moisture": 0.191863,
+        "confidence": 0.9215,
+        "completeness": 0.97,
+        "status": "estimated_optional_inputs_missing",
+        "used_inputs": {
+          "used_static_wetness": true,
+          "used_rain_history": true,
+          "used_temperature": true,
+          "used_relative_humidity": true,
+          "used_soil": true,
+          "used_slope": false
+        },
+        "missing_inputs": [
+          "slope_degrees"
+        ],
+        "input_provenance": {
+          "static_wetness": "slu_classified_static_wetness_raster",
+          "rain_history": "smhi_mesan_weather_history_v1",
+          "temperature": "smhi_mesan_weather_history_v1",
+          "relative_humidity": "smhi_mesan_weather_history_v1",
+          "soil": "sgu_jordarter_25k_100k"
+        },
+        "estimator_version": "current_soil_moisture_heuristic_v1"
+      }
+    },
+    {
+      "label": "mesic_moraine",
+      "latitude": 59.160136,
+      "longitude": 18.247348,
+      "target_date": "2026-08-27",
+      "mesan_grid_latitude": 59.169136,
+      "mesan_grid_longitude": 18.237348,
+      "mesan_grid_distance_m": 1151.678,
+      "inputs": {
+        "static_wetness_class": 2,
+        "soil_group": "moraine",
+        "slope_degrees": null,
+        "rain_3d_mm": 0.031837959289550785,
+        "rain_7d_mm": 8.849137802124023,
+        "rain_14d_mm": 12.296584148406982,
+        "rain_30d_mm": 18.57585050582886,
+        "temp_mean_7d_c": 14.846617744082462,
+        "relative_humidity_mean_7d": 78.966085127067
+      },
+      "moisture": {
+        "baseline_wetness": 0.55,
+        "rain_recharge": 0.110948,
+        "drying_pressure": 0.356562,
+        "soil_retention": 0.55,
+        "terrain_retention": null,
+        "estimated_current_soil_moisture": 0.489863,
+        "confidence": 0.9215,
+        "completeness": 0.97,
+        "status": "estimated_optional_inputs_missing",
+        "used_inputs": {
+          "used_static_wetness": true,
+          "used_rain_history": true,
+          "used_temperature": true,
+          "used_relative_humidity": true,
+          "used_soil": true,
+          "used_slope": false
+        },
+        "missing_inputs": [
+          "slope_degrees"
+        ],
+        "input_provenance": {
+          "static_wetness": "slu_classified_static_wetness_raster",
+          "rain_history": "smhi_mesan_weather_history_v1",
+          "temperature": "smhi_mesan_weather_history_v1",
+          "relative_humidity": "smhi_mesan_weather_history_v1",
+          "soil": "sgu_jordarter_25k_100k"
+        },
+        "estimator_version": "current_soil_moisture_heuristic_v1"
+      }
+    },
+    {
+      "label": "wet_fine_mineral",
+      "latitude": 59.163136,
+      "longitude": 18.247348,
+      "target_date": "2026-08-27",
+      "mesan_grid_latitude": 59.169136,
+      "mesan_grid_longitude": 18.237348,
+      "mesan_grid_distance_m": 877.461,
+      "inputs": {
+        "static_wetness_class": 3,
+        "soil_group": "fine_mineral",
+        "slope_degrees": null,
+        "rain_3d_mm": 0.031837959289550785,
+        "rain_7d_mm": 8.849137802124023,
+        "rain_14d_mm": 12.296584148406982,
+        "rain_30d_mm": 18.57585050582886,
+        "temp_mean_7d_c": 14.846617744082462,
+        "relative_humidity_mean_7d": 78.966085127067
+      },
+      "moisture": {
+        "baseline_wetness": 0.8,
+        "rain_recharge": 0.110948,
+        "drying_pressure": 0.356562,
+        "soil_retention": 0.75,
+        "terrain_retention": null,
+        "estimated_current_soil_moisture": 0.771863,
+        "confidence": 0.9215,
+        "completeness": 0.97,
+        "status": "estimated_optional_inputs_missing",
+        "used_inputs": {
+          "used_static_wetness": true,
+          "used_rain_history": true,
+          "used_temperature": true,
+          "used_relative_humidity": true,
+          "used_soil": true,
+          "used_slope": false
+        },
+        "missing_inputs": [
+          "slope_degrees"
+        ],
+        "input_provenance": {
+          "static_wetness": "slu_classified_static_wetness_raster",
+          "rain_history": "smhi_mesan_weather_history_v1",
+          "temperature": "smhi_mesan_weather_history_v1",
+          "relative_humidity": "smhi_mesan_weather_history_v1",
+          "soil": "sgu_jordarter_25k_100k"
+        },
+        "estimator_version": "current_soil_moisture_heuristic_v1"
+      }
+    },
+    {
+      "label": "peat",
+      "latitude": 59.139136,
+      "longitude": 18.237348,
+      "target_date": "2026-08-27",
+      "mesan_grid_latitude": 59.169136,
+      "mesan_grid_longitude": 18.237348,
+      "mesan_grid_distance_m": 3335.852,
+      "inputs": {
+        "static_wetness_class": 2,
+        "soil_group": "organic_peat",
+        "slope_degrees": null,
+        "rain_3d_mm": 0.031837959289550785,
+        "rain_7d_mm": 8.849137802124023,
+        "rain_14d_mm": 12.296584148406982,
+        "rain_30d_mm": 18.57585050582886,
+        "temp_mean_7d_c": 14.846617744082462,
+        "relative_humidity_mean_7d": 78.966085127067
+      },
+      "moisture": {
+        "baseline_wetness": 0.55,
+        "rain_recharge": 0.110948,
+        "drying_pressure": 0.356562,
+        "soil_retention": 0.95,
+        "terrain_retention": null,
+        "estimated_current_soil_moisture": 0.553863,
+        "confidence": 0.9215,
+        "completeness": 0.97,
+        "status": "estimated_optional_inputs_missing",
+        "used_inputs": {
+          "used_static_wetness": true,
+          "used_rain_history": true,
+          "used_temperature": true,
+          "used_relative_humidity": true,
+          "used_soil": true,
+          "used_slope": false
+        },
+        "missing_inputs": [
+          "slope_degrees"
+        ],
+        "input_provenance": {
+          "static_wetness": "slu_classified_static_wetness_raster",
+          "rain_history": "smhi_mesan_weather_history_v1",
+          "temperature": "smhi_mesan_weather_history_v1",
+          "relative_humidity": "smhi_mesan_weather_history_v1",
+          "soil": "sgu_jordarter_25k_100k"
+        },
+        "estimator_version": "current_soil_moisture_heuristic_v1"
+      }
+    },
+    {
+      "label": "sloped_bedrock",
+      "latitude": 59.43,
+      "longitude": 18.08,
+      "target_date": "2026-08-27",
+      "mesan_grid_latitude": 59.418897,
+      "mesan_grid_longitude": 18.129709,
+      "mesan_grid_distance_m": 3070.761,
+      "inputs": {
+        "static_wetness_class": 1,
+        "soil_group": "bedrock_or_thin_soil",
+        "slope_degrees": 4.671100322128949,
+        "rain_3d_mm": 0.3637348937988281,
+        "rain_7d_mm": 6.402047805786132,
+        "rain_14d_mm": 12.715876750946041,
+        "rain_30d_mm": 18.980807952880863,
+        "temp_mean_7d_c": 15.895129975818422,
+        "relative_humidity_mean_7d": 75.49066285753534
+      },
+      "moisture": {
+        "baseline_wetness": 0.3,
+        "rain_recharge": 0.113574,
+        "drying_pressure": 0.403512,
+        "soil_retention": 0.15,
+        "terrain_retention": 0.844297,
+        "estimated_current_soil_moisture": 0.183355,
+        "confidence": 0.95,
+        "completeness": 1.0,
+        "status": "estimated_complete",
+        "used_inputs": {
+          "used_static_wetness": true,
+          "used_rain_history": true,
+          "used_temperature": true,
+          "used_relative_humidity": true,
+          "used_soil": true,
+          "used_slope": true
+        },
+        "missing_inputs": [],
+        "input_provenance": {
+          "static_wetness": "slu_classified_static_wetness_raster",
+          "rain_history": "smhi_mesan_weather_history_v1",
+          "temperature": "smhi_mesan_weather_history_v1",
+          "relative_humidity": "smhi_mesan_weather_history_v1",
+          "soil": "sgu_jordarter_25k_100k",
+          "slope": "lantmateriet_dtm_cog_terrain"
+        },
+        "estimator_version": "current_soil_moisture_heuristic_v1"
+      }
+    }
+  ]
+}

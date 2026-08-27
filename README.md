@@ -7,12 +7,12 @@ inte en statistisk sannolikhet och säger inte att svamp faktiskt finns på plat
 
 ## Status och avgränsning
 
-Version 0 kan kombinera riktiga trädslags-, skogsstruktur- och klassade statiska
-markfuktighetsraster med syntetiska fallbackfeatures. Vädervärdena är fortfarande
-syntetiska och statiska
-exempelvärden med basdatum 2026-08-23; det efterfrågade datumet påverkar i nuläget
-säsongskomponenten, men hämtar inte historiskt väder. Mockkällorna har medvetet låg
-kvalitetsvikt och ger därför låg `confidence`.
+Version 0 kan kombinera riktiga trädslags-, skogsstruktur-, klassade statiska
+markfuktighets- och marktäckelager med syntetiska fallbackfeatures. Ett lokalt
+30-dygns MESAN-arkiv kan nu leverera coverage-verifierade nederbörds-, temperatur-
+och luftfuktighetsaggregat via `MesanWeatherHistoryDataSource`. Det enkla
+`fungifind`-kommandot använder fortfarande den fristående mockkonfigurationen;
+`scripts/sample_mesan_model.py` kör den lokala MESAN-integrationen.
 
 Alla biologiska preferensintervall och vikter är preliminära antaganden för att
 testa programflödet. De är inte forskningsvaliderade, tränade eller kalibrerade mot
@@ -72,7 +72,8 @@ habitat_score = viktat medelvärde av
   forest, tree_species, soil_moisture, terrain, soil, static_wetness
 
 fruiting_score = viktat medelvärde av
-  rain_history, recent_moisture, temperature, season, drought
+  recent_rain, medium_term_rain, background_rain,
+  temperature, relative_humidity, season
 ```
 
 För kantarell är slutformeln:

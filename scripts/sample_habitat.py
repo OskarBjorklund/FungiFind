@@ -12,7 +12,11 @@ from fungifind.data_sources import (
     ConfiguredRasterFeatureDataSource,
     ForestProfileRasterDataSource,
     ForestShareInterpretation,
+    NmdLandcoverRasterDataSource,
+    SguSoilVectorDataSource,
     StaticWetnessRasterDataSource,
+    TerrainDemReader,
+    VectorPointError,
     diagnose_grid_alignment,
 )
 from fungifind.data_sources.raster import RasterPointError
@@ -43,6 +47,29 @@ def main() -> int:
         type=Path,
         default=Path("src/data/misc_data/SLUMarkfuktighetKlassad.tif"),
     )
+    parser.add_argument(
+        "--elevation-manifest",
+        type=Path,
+        default=Path("src/data/elevation/manifest.json"),
+    )
+    parser.add_argument(
+        "--landcover-raster",
+        type=Path,
+        default=None,
+        help=(
+            "NMD2023 v2.1 raster. By default, use src/data/landcover and then "
+            "the existing src/data/base_layer location."
+        ),
+    )
+    parser.add_argument(
+        "--soil-geopackage",
+        type=Path,
+        default=None,
+        help=(
+            "SGU Jordarter GeoPackage. By default, use src/data/soil and then "
+            "the existing src/data/soil_type location."
+        ),
+    )
     args = parser.parse_args()
     location = Location(args.latitude, args.longitude)
 
@@ -54,11 +81,23 @@ def main() -> int:
         args.structure_dir
     )
     wetness_source = StaticWetnessRasterDataSource.slu_classified(args.wetness_raster)
+    landcover_source = NmdLandcoverRasterDataSource.nmd2023_v2_1(args.landcover_raster)
     try:
+        soil_source = SguSoilVectorDataSource.official(args.soil_geopackage)
+        terrain_reader = TerrainDemReader.from_manifest(args.elevation_manifest)
         trees = tree_source.sample_profile(location)
         structure = structure_source.sample_features(location)
         wetness = wetness_source.sample_wetness(location)
-    except (FileNotFoundError, RasterPointError, RasterioError, ValueError) as exc:
+        landcover = landcover_source.sample_landcover(location)
+        terrain = terrain_reader.sample_terrain(location)
+        soil = soil_source.sample_soil(location)
+    except (
+        FileNotFoundError,
+        RasterPointError,
+        RasterioError,
+        ValueError,
+        VectorPointError,
+    ) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 
@@ -92,16 +131,68 @@ def main() -> int:
     print(f"Pixel: row={wetness.sample.pixel_row}, col={wetness.sample.pixel_col}")
     print(f"NoData: {str(wetness_item.is_nodata).lower()}")
 
+    landcover_item = landcover.snapshot.feature_provenance["landcover_class"]
+    landcover_features = landcover.snapshot.features
+    print("\nLAND COVER")
+    print(f"\nRaw class: {landcover_item.raw_value}")
+    print(f"Official label: {landcover_features.landcover_label}")
+    print(f"Semantic status: {landcover_item.semantic_status}")
+    searchable = landcover_item.details["searchable_habitat"]
+    print(f"Searchable habitat: {searchable}")
+    if landcover.exclusion_reason is None:
+        exclusion_text = "none"
+    else:
+        exclusion_text = f"{landcover.exclusion_reason[0]} ({landcover.exclusion_reason[1]})"
+    print(f"Exclusion reason: {exclusion_text}")
+    print(f"CRS: {_crs_label(landcover.sample.source_epsg, landcover.sample.source_crs)}")
+    print(f"Pixel: row={landcover.sample.pixel_row}, col={landcover.sample.pixel_col}")
+    print(f"NoData: {str(landcover_item.is_nodata).lower()}")
+
+    terrain_features = terrain.snapshot.features
+    terrain_match = terrain.tile_match
+    print("\nTERRAIN")
+    print(f"\nElevation: {terrain_features.elevation_m}")
+    print(f"Slope: {terrain_features.slope_degrees}")
+    print(f"Aspect: {terrain_features.aspect_degrees}")
+    print(
+        f"DEM tile: {terrain_match.tile.source_filename} "
+        f"(item {terrain_match.tile.item_id})"
+    )
+    print(f"CRS: {_crs_label(terrain_match.source_epsg, terrain_match.source_crs)}")
+    print(
+        "CRS components: "
+        f"horizontal EPSG:{terrain_match.horizontal_epsg}, "
+        f"vertical EPSG:{terrain_match.vertical_epsg}"
+    )
+    print(f"Method: {terrain.method}")
+
+    soil_features = soil.snapshot.features
+    soil_item = soil.snapshot.feature_provenance["soil_type_code"]
+    soil_sample = soil.sample
+    print("\nSOIL")
+    print(f"\nRaw code: {soil_item.raw_value}")
+    print(f"Official label: {soil_features.soil_type_label}")
+    print(f"Derived group: {soil_features.soil_group}")
+    print(f"Semantic status: {soil_item.semantic_status}")
+    print(f"Dataset: {soil_item.details['dataset']}")
+    print(f"Layer: {soil_sample.layer_name}")
+    print(f"Feature ID: {soil_sample.feature_id}")
+    print(f"CRS: {_crs_label(soil_sample.source_epsg, soil_sample.source_crs)}")
+    print(f"Lookup method: {soil_sample.lookup_method}")
+
     all_provenance = {
         **trees.snapshot.feature_provenance,
         **structure.snapshot.feature_provenance,
         **wetness.snapshot.feature_provenance,
+        **landcover.snapshot.feature_provenance,
+        **terrain.snapshot.feature_provenance,
+        **soil.snapshot.feature_provenance,
     }
     overall_alignment = diagnose_grid_alignment(all_provenance)
     print("\nTree species grid alignment: exact")
     print(f"Forest structure grid alignment: {structure.grid_alignment.status}")
     print(f"Grid alignment: {overall_alignment.status}")
-    print("Each raster was transformed and indexed independently from WGS84.")
+    print("Each raster and vector source transformed WGS84 independently.")
     return 0
 
 

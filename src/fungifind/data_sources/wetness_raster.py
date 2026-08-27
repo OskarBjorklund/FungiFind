@@ -125,6 +125,7 @@ class StaticWetnessRasterDataSource:
             quality = 0.95
 
         details: dict[str, str | float | int] = {
+            "source_file": Path(sample.source_path).name,
             "source_crs": sample.source_crs,
             "source_epsg": sample.source_epsg or -1,
             "pixel_row": sample.pixel_row,
@@ -132,8 +133,15 @@ class StaticWetnessRasterDataSource:
             "temporal_meaning": "long_term_static_hydrological_wetness_potential",
             "dynamic_current_soil_moisture": "separate_feature_not_provided_here",
         }
+        if sample.nodata_value is not None:
+            details["nodata_value"] = sample.nodata_value
         if interpreted_label is not None:
             details["interpreted_class_label"] = interpreted_label
+        if interpreted_class == 4:
+            details["habitat_exclusion_code"] = "open_water"
+            details["habitat_exclusion_label"] = (
+                "Öppet vatten enligt klassad SLU-markfuktighetskarta"
+            )
         if self.class_mapping is not None:
             details["class_mapping_source"] = self.class_mapping.source_reference
 

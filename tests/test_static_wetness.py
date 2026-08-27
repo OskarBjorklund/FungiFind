@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import fields
+from dataclasses import fields, replace
 from pathlib import Path
 
 import numpy as np
@@ -20,7 +20,14 @@ from fungifind.data_sources import (
     diagnose_grid_alignment,
 )
 from fungifind.data_sources.raster import RasterPointOutsideBoundsError
-from fungifind.models import DynamicWeatherFeatures, Location, Species, StaticHabitatFeatures
+from fungifind.models import (
+    DynamicWeatherFeatures,
+    FeatureProvenance,
+    FeatureSnapshot,
+    Location,
+    Species,
+    StaticHabitatFeatures,
+)
 from fungifind.service import MushroomScoringService
 
 
@@ -87,6 +94,8 @@ def test_validated_integer_class_mapping_and_provenance(tmp_path: Path) -> None:
     assert provenance.semantic_status == "validated_class_mapping"
     assert provenance.is_nodata is False
     assert provenance.source_path == str(path.resolve())
+    assert provenance.details["source_file"] == path.name
+    assert provenance.details["nodata_value"] == 255
     assert provenance.details["source_epsg"] == 3006
     assert provenance.details["pixel_row"] == 1
     assert provenance.details["pixel_col"] == 1
@@ -191,6 +200,54 @@ def test_unvalidated_semantics_leave_all_scores_unchanged(tmp_path: Path) -> Non
     assert result.confidence == baseline.confidence
     assert "static_wetness" not in result.factors
     assert result.feature_provenance["static_wetness_class"].raw_value == 2
+
+
+class _PopulatedButUnvalidatedWetnessSource:
+    """Exercise the scorer's provenance guard independently of the raster adapter."""
+
+    def get_features(self, location: Location) -> FeatureSnapshot[StaticHabitatFeatures]:
+        baseline = MockHabitatDataSource().get_features(location)
+        provenance = FeatureProvenance(
+            source_name="unvalidated_test_source",
+            quality=1.0,
+            is_mock=False,
+            semantic_status="unvalidated",
+            raw_value=3,
+            interpreted_value=3,
+        )
+        return FeatureSnapshot(
+            features=replace(
+                baseline.features,
+                static_wetness_class=3,
+                static_wetness_label="untrusted label",
+            ),
+            metadata=baseline.metadata,
+            feature_provenance={"static_wetness_class": provenance},
+        )
+
+
+def test_scoring_rejects_populated_wetness_without_validated_provenance() -> None:
+    location = Location(59.412, 18.132)
+    weather = MockWeatherDataSource()
+    baseline = MushroomScoringService(MockHabitatDataSource(), weather).get_score(
+        location.latitude,
+        location.longitude,
+        "2026-08-23",
+        Species.CANTHARELLUS_CIBARIUS,
+    )
+    result = MushroomScoringService(
+        _PopulatedButUnvalidatedWetnessSource(), weather
+    ).get_score(
+        location.latitude,
+        location.longitude,
+        "2026-08-23",
+        Species.CANTHARELLUS_CIBARIUS,
+    )
+
+    assert result.habitat_score == baseline.habitat_score
+    assert result.final_score == baseline.final_score
+    assert result.confidence == baseline.confidence
+    assert "static_wetness" not in result.factors
 
 
 def test_validated_mapping_activates_species_specific_static_wetness_score(
