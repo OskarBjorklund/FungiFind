@@ -1,0 +1,759 @@
+{
+  "experiment_version": "fruiting_scoring_v2_experiment_v1",
+  "production_scores_unchanged": true,
+  "target_date": "2026-08-27",
+  "point_count": 10,
+  "species_count": 2,
+  "points": [
+    {
+      "label": "class1_coarse",
+      "latitude": 59.166136,
+      "longitude": 18.242348,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.169136,
+        "longitude": 18.237348,
+        "distance_m": 438.722
+      },
+      "habitat": {
+        "static_wetness_class": 1,
+        "soil_group": "coarse_mineral",
+        "slope_degrees": null,
+        "landcover_label": "Frisk-fuktig gräsdominerad mark"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.705651,
+          "old": {
+            "precipitation": 0.191525,
+            "temperature": 1.0,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.636186,
+            "final_score": 0.677865
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.191863,
+            "moisture_preference": 0.043937,
+            "recent_rain_trigger": 0.008674,
+            "temperature": 1.0,
+            "season": 1.0,
+            "fruiting_score_v2": 0.470639,
+            "final_score_v2": 0.611646,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": -0.165547,
+            "final_v2_minus_v1": -0.066219
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.609034,
+          "old": {
+            "precipitation": 0.105575,
+            "temperature": 0.708939,
+            "relative_humidity": 1.0,
+            "season": 0.466667,
+            "fruiting_score": 0.436011,
+            "final_score": 0.531174
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.191863,
+            "moisture_preference": 0.0,
+            "recent_rain_trigger": 0.011429,
+            "temperature": 0.708939,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.241109,
+            "final_score_v2": 0.443468,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": -0.194902,
+            "final_v2_minus_v1": -0.087706
+          }
+        }
+      ]
+    },
+    {
+      "label": "class2_moraine",
+      "latitude": 59.160136,
+      "longitude": 18.247348,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.169136,
+        "longitude": 18.237348,
+        "distance_m": 1151.678
+      },
+      "habitat": {
+        "static_wetness_class": 2,
+        "soil_group": "moraine",
+        "slope_degrees": null,
+        "landcover_label": "Granskog på fastmark"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.967268,
+          "old": {
+            "precipitation": 0.191525,
+            "temperature": 1.0,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.636186,
+            "final_score": 0.834835
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.489863,
+            "moisture_preference": 1.0,
+            "recent_rain_trigger": 0.008674,
+            "temperature": 1.0,
+            "season": 1.0,
+            "fruiting_score_v2": 0.900867,
+            "final_score_v2": 0.940708,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.264681,
+            "final_v2_minus_v1": 0.105873
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.950712,
+          "old": {
+            "precipitation": 0.105575,
+            "temperature": 0.708939,
+            "relative_humidity": 1.0,
+            "season": 0.466667,
+            "fruiting_score": 0.436011,
+            "final_score": 0.719097
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.489863,
+            "moisture_preference": 0.799543,
+            "recent_rain_trigger": 0.011429,
+            "temperature": 0.708939,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.640881,
+            "final_score_v2": 0.811288,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.20487,
+            "final_v2_minus_v1": 0.092191
+          }
+        }
+      ]
+    },
+    {
+      "label": "class3_fine",
+      "latitude": 59.163136,
+      "longitude": 18.247348,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.169136,
+        "longitude": 18.237348,
+        "distance_m": 877.461
+      },
+      "habitat": {
+        "static_wetness_class": 3,
+        "soil_group": "fine_mineral",
+        "slope_degrees": null,
+        "landcover_label": "Gräsdominerad våtmark, högvuxen"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.790397,
+          "old": {
+            "precipitation": 0.191525,
+            "temperature": 1.0,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.636186,
+            "final_score": 0.728713
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.771863,
+            "moisture_preference": 0.740685,
+            "recent_rain_trigger": 0.008674,
+            "temperature": 1.0,
+            "season": 1.0,
+            "fruiting_score_v2": 0.784176,
+            "final_score_v2": 0.787908,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.14799,
+            "final_v2_minus_v1": 0.059195
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.884458,
+          "old": {
+            "precipitation": 0.105575,
+            "temperature": 0.708939,
+            "relative_humidity": 1.0,
+            "season": 0.466667,
+            "fruiting_score": 0.436011,
+            "final_score": 0.682657
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.771863,
+            "moisture_preference": 1.0,
+            "recent_rain_trigger": 0.011429,
+            "temperature": 0.708939,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.741109,
+            "final_score_v2": 0.819951,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.305098,
+            "final_v2_minus_v1": 0.137294
+          }
+        }
+      ]
+    },
+    {
+      "label": "class2_peat",
+      "latitude": 59.139136,
+      "longitude": 18.237348,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.169136,
+        "longitude": 18.237348,
+        "distance_m": 3335.852
+      },
+      "habitat": {
+        "static_wetness_class": 2,
+        "soil_group": "organic_peat",
+        "slope_degrees": null,
+        "landcover_label": "Barrblandskog på våtmark"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.916902,
+          "old": {
+            "precipitation": 0.191525,
+            "temperature": 1.0,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.636186,
+            "final_score": 0.804616
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.553863,
+            "moisture_preference": 1.0,
+            "recent_rain_trigger": 0.008674,
+            "temperature": 1.0,
+            "season": 1.0,
+            "fruiting_score_v2": 0.900867,
+            "final_score_v2": 0.910488,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.264681,
+            "final_v2_minus_v1": 0.105872
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.857932,
+          "old": {
+            "precipitation": 0.105575,
+            "temperature": 0.708939,
+            "relative_humidity": 1.0,
+            "season": 0.466667,
+            "fruiting_score": 0.436011,
+            "final_score": 0.668068
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.553863,
+            "moisture_preference": 1.0,
+            "recent_rain_trigger": 0.011429,
+            "temperature": 0.708939,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.741109,
+            "final_score_v2": 0.805362,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.305098,
+            "final_v2_minus_v1": 0.137294
+          }
+        }
+      ]
+    },
+    {
+      "label": "class1_peat",
+      "latitude": 59.139136,
+      "longitude": 18.242348,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.169136,
+        "longitude": 18.237348,
+        "distance_m": 3348.01
+      },
+      "habitat": {
+        "static_wetness_class": 1,
+        "soil_group": "organic_peat",
+        "slope_degrees": null,
+        "landcover_label": "Granskog på våtmark"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.738831,
+          "old": {
+            "precipitation": 0.191525,
+            "temperature": 1.0,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.636186,
+            "final_score": 0.697773
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.303863,
+            "moisture_preference": 0.458752,
+            "recent_rain_trigger": 0.008674,
+            "temperature": 1.0,
+            "season": 1.0,
+            "fruiting_score_v2": 0.657306,
+            "final_score_v2": 0.706221,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.02112,
+            "final_v2_minus_v1": 0.008448
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.654725,
+          "old": {
+            "precipitation": 0.105575,
+            "temperature": 0.708939,
+            "relative_humidity": 1.0,
+            "season": 0.466667,
+            "fruiting_score": 0.436011,
+            "final_score": 0.556304
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.303863,
+            "moisture_preference": 0.179543,
+            "recent_rain_trigger": 0.011429,
+            "temperature": 0.708939,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.330881,
+            "final_score_v2": 0.508995,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": -0.10513,
+            "final_v2_minus_v1": -0.047309
+          }
+        }
+      ]
+    },
+    {
+      "label": "class3_peat",
+      "latitude": 59.166136,
+      "longitude": 18.282348,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.169136,
+        "longitude": 18.237348,
+        "distance_m": 2586.181
+      },
+      "habitat": {
+        "static_wetness_class": 3,
+        "soil_group": "organic_peat",
+        "slope_degrees": null,
+        "landcover_label": "Fastmattemyr, mager"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.799847,
+          "old": {
+            "precipitation": 0.191525,
+            "temperature": 1.0,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.636186,
+            "final_score": 0.734383
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.803863,
+            "moisture_preference": 0.580685,
+            "recent_rain_trigger": 0.008674,
+            "temperature": 1.0,
+            "season": 1.0,
+            "fruiting_score_v2": 0.712176,
+            "final_score_v2": 0.764778,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.07599,
+            "final_v2_minus_v1": 0.030395
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.901169,
+          "old": {
+            "precipitation": 0.105575,
+            "temperature": 0.708939,
+            "relative_humidity": 1.0,
+            "season": 0.466667,
+            "fruiting_score": 0.436011,
+            "final_score": 0.691848
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.803863,
+            "moisture_preference": 1.0,
+            "recent_rain_trigger": 0.011429,
+            "temperature": 0.708939,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.741109,
+            "final_score_v2": 0.829142,
+            "moisture_confidence": 0.9215,
+            "moisture_completeness": 0.97,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.305098,
+            "final_v2_minus_v1": 0.137294
+          }
+        }
+      ]
+    },
+    {
+      "label": "flat_class2_fine",
+      "latitude": 59.412897,
+      "longitude": 18.084709,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.418897,
+        "longitude": 18.129709,
+        "distance_m": 2631.901
+      },
+      "habitat": {
+        "static_wetness_class": 2,
+        "soil_group": "fine_mineral",
+        "slope_degrees": 0.661937441641452,
+        "landcover_label": "Frisk-fuktig buskdominerad mark"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.721149,
+          "old": {
+            "precipitation": 0.174567,
+            "temperature": 0.974425,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.620883,
+            "final_score": 0.681042
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.537373,
+            "moisture_preference": 1.0,
+            "recent_rain_trigger": 0.078357,
+            "temperature": 0.974425,
+            "season": 1.0,
+            "fruiting_score_v2": 0.901442,
+            "final_score_v2": 0.793266,
+            "moisture_confidence": 0.95,
+            "moisture_completeness": 1.0,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.280559,
+            "final_v2_minus_v1": 0.112224
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.651158,
+          "old": {
+            "precipitation": 0.093378,
+            "temperature": 0.556528,
+            "relative_humidity": 0.99866,
+            "season": 0.466667,
+            "fruiting_score": 0.387687,
+            "final_score": 0.532596
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.537373,
+            "moisture_preference": 0.95791,
+            "recent_rain_trigger": 0.106871,
+            "temperature": 0.556528,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.696078,
+            "final_score_v2": 0.671372,
+            "moisture_confidence": 0.95,
+            "moisture_completeness": 1.0,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.308391,
+            "final_v2_minus_v1": 0.138776
+          }
+        }
+      ]
+    },
+    {
+      "label": "sloping_class1_bedrock",
+      "latitude": 59.412897,
+      "longitude": 18.154709,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.418897,
+        "longitude": 18.129709,
+        "distance_m": 1563.863
+      },
+      "habitat": {
+        "static_wetness_class": 1,
+        "soil_group": "bedrock_or_thin_soil",
+        "slope_degrees": 16.272581889588874,
+        "landcover_label": "Triviallövskog på fastmark"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.737049,
+          "old": {
+            "precipitation": 0.174567,
+            "temperature": 0.974425,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.620883,
+            "final_score": 0.690582
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.160152,
+            "moisture_preference": 0.0,
+            "recent_rain_trigger": 0.078357,
+            "temperature": 0.974425,
+            "season": 1.0,
+            "fruiting_score_v2": 0.451442,
+            "final_score_v2": 0.622806,
+            "moisture_confidence": 0.95,
+            "moisture_completeness": 1.0,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": -0.169441,
+            "final_v2_minus_v1": -0.067776
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.609117,
+          "old": {
+            "precipitation": 0.093378,
+            "temperature": 0.556528,
+            "relative_humidity": 0.99866,
+            "season": 0.466667,
+            "fruiting_score": 0.387687,
+            "final_score": 0.509474
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.160152,
+            "moisture_preference": 0.0,
+            "recent_rain_trigger": 0.106871,
+            "temperature": 0.556528,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.217123,
+            "final_score_v2": 0.43272,
+            "moisture_confidence": 0.95,
+            "moisture_completeness": 1.0,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": -0.170564,
+            "final_v2_minus_v1": -0.076754
+          }
+        }
+      ]
+    },
+    {
+      "label": "steep_class1_moraine",
+      "latitude": 59.412897,
+      "longitude": 18.169709,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.418897,
+        "longitude": 18.129709,
+        "distance_m": 2359.349
+      },
+      "habitat": {
+        "static_wetness_class": 1,
+        "soil_group": "moraine",
+        "slope_degrees": 20.68659437253709,
+        "landcover_label": "Lövblandad barrskog på fastmark"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.712453,
+          "old": {
+            "precipitation": 0.174567,
+            "temperature": 0.974425,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.620883,
+            "final_score": 0.675825
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.215324,
+            "moisture_preference": 0.13083,
+            "recent_rain_trigger": 0.078357,
+            "temperature": 0.974425,
+            "season": 1.0,
+            "fruiting_score_v2": 0.510315,
+            "final_score_v2": 0.631598,
+            "moisture_confidence": 0.95,
+            "moisture_completeness": 1.0,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": -0.110568,
+            "final_v2_minus_v1": -0.044227
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.571048,
+          "old": {
+            "precipitation": 0.093378,
+            "temperature": 0.556528,
+            "relative_humidity": 0.99866,
+            "season": 0.466667,
+            "fruiting_score": 0.387687,
+            "final_score": 0.488536
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.215324,
+            "moisture_preference": 0.0,
+            "recent_rain_trigger": 0.106871,
+            "temperature": 0.556528,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.217123,
+            "final_score_v2": 0.411782,
+            "moisture_confidence": 0.95,
+            "moisture_completeness": 1.0,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": -0.170564,
+            "final_v2_minus_v1": -0.076754
+          }
+        }
+      ]
+    },
+    {
+      "label": "sloping_class2_coarse",
+      "latitude": 59.436897,
+      "longitude": 18.109709,
+      "target_date": "2026-08-27",
+      "mesan_grid": {
+        "latitude": 59.418897,
+        "longitude": 18.129709,
+        "distance_m": 2299.02
+      },
+      "habitat": {
+        "static_wetness_class": 2,
+        "soil_group": "coarse_mineral",
+        "slope_degrees": 6.324348992894588,
+        "landcover_label": "Frisk-fuktig gräsdominerad mark"
+      },
+      "species_results": [
+        {
+          "species": "cantharellus_cibarius",
+          "habitat_score": 0.800023,
+          "old": {
+            "precipitation": 0.174567,
+            "temperature": 0.974425,
+            "relative_humidity": 1.0,
+            "season": 1.0,
+            "fruiting_score": 0.620883,
+            "final_score": 0.728367
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.446049,
+            "moisture_preference": 0.985367,
+            "recent_rain_trigger": 0.078357,
+            "temperature": 0.974425,
+            "season": 1.0,
+            "fruiting_score_v2": 0.894857,
+            "final_score_v2": 0.837957,
+            "moisture_confidence": 0.95,
+            "moisture_completeness": 1.0,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.273974,
+            "final_v2_minus_v1": 0.10959
+          }
+        },
+        {
+          "species": "craterellus_tubaeformis",
+          "habitat_score": 0.744384,
+          "old": {
+            "precipitation": 0.093378,
+            "temperature": 0.556528,
+            "relative_humidity": 0.99866,
+            "season": 0.466667,
+            "fruiting_score": 0.387687,
+            "final_score": 0.58387
+          },
+          "v2": {
+            "estimated_current_soil_moisture": 0.446049,
+            "moisture_preference": 0.653497,
+            "recent_rain_trigger": 0.106871,
+            "temperature": 0.556528,
+            "season": 0.466667,
+            "fruiting_score_v2": 0.543872,
+            "final_score_v2": 0.654153,
+            "moisture_confidence": 0.95,
+            "moisture_completeness": 1.0,
+            "status": "available"
+          },
+          "delta": {
+            "fruiting_v2_minus_v1": 0.156185,
+            "final_v2_minus_v1": 0.070283
+          }
+        }
+      ]
+    }
+  ]
+}

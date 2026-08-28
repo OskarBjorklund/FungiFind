@@ -7,6 +7,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, time, timedelta
 from pathlib import Path
+from threading import RLock
 
 from fungifind.data_sources.smhi_mesan import MesanGridPoint, format_utc_datetime
 from fungifind.data_sources.weather_history import (
@@ -17,7 +18,7 @@ from fungifind.data_sources.weather_history import (
     MesanHistoryError,
     WeatherAggregate,
     WeatherHistoryFeatures,
-    get_weather_history_features,
+    get_weather_history_features_from_archive,
 )
 from fungifind.models import (
     DataSourceMetadata,
@@ -113,13 +114,26 @@ class MesanWeatherHistoryDataSource:
         self.max_grid_distance_m = max_grid_distance_m
         self.quality = quality
         self.significant_rain_threshold_mm = significant_rain_threshold_mm
+        self._grid_points_lock = RLock()
+        self._grid_points: tuple[MesanGridPoint, ...] | None = None
 
-    def resolve(
-        self, location: Location, target_date: date | datetime
-    ) -> MesanWeatherResolution:
+    def available_grid_points(self) -> tuple[MesanGridPoint, ...]:
+        """Return the stable local archive grid set, loading it only once."""
+
+        with self._grid_points_lock:
+            if self._grid_points is None:
+                self._grid_points = self.archive.list_grid_points()
+            if not self._grid_points:
+                raise MesanHistoryError("MESAN archive contains no grid points")
+            return self._grid_points
+
+    def snap_grid_point(self, location: Location) -> tuple[MesanGridPoint, float]:
+        """Resolve only the nearest stored point for viewport grouping."""
+
         requested = MesanGridPoint(location.latitude, location.longitude)
-        grid_point = self.archive.find_nearest_grid_point(
-            location.latitude, location.longitude
+        grid_point = min(
+            self.available_grid_points(),
+            key=lambda point: _distance_m(requested, point),
         )
         distance = _distance_m(requested, grid_point)
         if distance > self.max_grid_distance_m:
@@ -128,6 +142,17 @@ class MesanWeatherHistoryDataSource:
                 f"{distance:.0f} m away, beyond the configured "
                 f"{self.max_grid_distance_m:.0f} m limit; backfill this location first"
             )
+        return grid_point, distance
+
+    def resolve_snapped(
+        self,
+        location: Location,
+        target_date: date | datetime,
+        grid_point: MesanGridPoint,
+        grid_distance_m: float,
+    ) -> MesanWeatherResolution:
+        """Resolve the target hour for an already-snapped viewport group."""
+
         target_time = self.archive.latest_time_at_or_before(
             grid_point, _cutoff(target_date)
         )
@@ -135,18 +160,39 @@ class MesanWeatherHistoryDataSource:
             raise MesanHistoryError(
                 "Selected MESAN grid point has no stored hour on or before the target"
             )
-        return MesanWeatherResolution(requested, grid_point, distance, target_time)
+        return MesanWeatherResolution(
+            MesanGridPoint(location.latitude, location.longitude),
+            grid_point,
+            grid_distance_m,
+            target_time,
+        )
+
+    def resolve(
+        self, location: Location, target_date: date | datetime
+    ) -> MesanWeatherResolution:
+        grid_point, distance = self.snap_grid_point(location)
+        return self.resolve_snapped(
+            location,
+            target_date,
+            grid_point,
+            distance,
+        )
+
+    def get_history_features_for_resolution(
+        self, resolution: MesanWeatherResolution
+    ) -> WeatherHistoryFeatures:
+        return get_weather_history_features_from_archive(
+            self.archive,
+            resolution.grid_point,
+            resolution.target_time,
+            significant_rain_threshold_mm=self.significant_rain_threshold_mm,
+        )
 
     def get_history_features(
         self, location: Location, target_date: date | datetime
     ) -> tuple[WeatherHistoryFeatures, MesanWeatherResolution]:
         resolution = self.resolve(location, target_date)
-        history = get_weather_history_features(
-            resolution.grid_point,
-            resolution.target_time,
-            archive_path=self.archive.path,
-            significant_rain_threshold_mm=self.significant_rain_threshold_mm,
-        )
+        history = self.get_history_features_for_resolution(resolution)
         return history, resolution
 
     def _provenance(
@@ -211,7 +257,15 @@ class MesanWeatherHistoryDataSource:
     def get_features(
         self, location: Location, target_date: date | datetime
     ) -> FeatureSnapshot[DynamicWeatherFeatures]:
-        history, resolution = self.get_history_features(location, target_date)
+        resolution = self.resolve(location, target_date)
+        return self.get_features_for_resolution(resolution)
+
+    def get_features_for_resolution(
+        self, resolution: MesanWeatherResolution
+    ) -> FeatureSnapshot[DynamicWeatherFeatures]:
+        """Aggregate one already-resolved MESAN group without re-snapping it."""
+
+        history = self.get_history_features_for_resolution(resolution)
         records = self.archive.read_window(
             resolution.grid_point,
             start_exclusive=resolution.target_time - timedelta(days=30),

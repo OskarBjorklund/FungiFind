@@ -6,10 +6,12 @@ import json
 import math
 import sqlite3
 from collections.abc import Callable, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass, fields
 from datetime import UTC, datetime, timedelta
 from enum import Enum
 from pathlib import Path
+from threading import RLock
 from types import MappingProxyType
 from typing import Protocol
 
@@ -218,6 +220,8 @@ class MesanHistoryArchive:
 
     def __init__(self, path: str | Path = DEFAULT_MESAN_HISTORY_DATABASE) -> None:
         self.path = Path(path).resolve()
+        self._reader_lock = RLock()
+        self._reader: sqlite3.Connection | None = None
 
     def initialize(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -300,12 +304,29 @@ class MesanHistoryArchive:
                         f"ALTER TABLE mesan_hourly_analysis ADD COLUMN {name} {definition}"
                     )
 
-    def _existing_connection(self) -> sqlite3.Connection:
+    @contextmanager
+    def _existing_connection(self):
         if not self.path.is_file():
             raise FileNotFoundError(self.path)
-        connection = sqlite3.connect(self.path)
-        connection.row_factory = sqlite3.Row
-        return connection
+        with self._reader_lock:
+            if self._reader is None:
+                uri = self.path.as_uri() + "?mode=ro"
+                self._reader = sqlite3.connect(
+                    uri,
+                    uri=True,
+                    check_same_thread=False,
+                )
+                self._reader.row_factory = sqlite3.Row
+                self._reader.execute("PRAGMA query_only=ON")
+            yield self._reader
+
+    def close(self) -> None:
+        """Close the reusable read-only archive connection."""
+
+        with self._reader_lock:
+            if self._reader is not None:
+                self._reader.close()
+            self._reader = None
 
     def insert_point_analysis(
         self, analysis: MesanPointAnalysis
@@ -948,23 +969,26 @@ def _dry_period_metric(
     )
 
 
-def get_weather_history_features(
+def get_weather_history_features_from_archive(
+    archive: MesanHistoryArchive,
     grid_point: MesanGridPoint,
     target_time: datetime,
     *,
-    archive_path: str | Path = DEFAULT_MESAN_HISTORY_DATABASE,
     significant_rain_threshold_mm: float | None = None,
 ) -> WeatherHistoryFeatures:
-    """Return values only for complete windows; partial windows retain coverage."""
+    """Aggregate one MESAN point using one shared 30-day archive read."""
 
     target = _normalize_time(target_time)
-    archive = MesanHistoryArchive(archive_path)
+    records = archive.read_window(
+        grid_point,
+        start_exclusive=target - timedelta(days=30),
+        end_inclusive=target,
+    )
 
     def window(days: int) -> tuple[MesanArchiveRecord, ...]:
-        return archive.read_window(
-            grid_point,
-            start_exclusive=target - timedelta(days=days),
-            end_inclusive=target,
+        cutoff = target - timedelta(days=days)
+        return tuple(
+            record for record in records if cutoff < record.time <= target
         )
 
     rain = {
@@ -1021,6 +1045,27 @@ def get_weather_history_features(
         dry_spell_length=dry_metric,
         significant_rain_threshold_mm=significant_rain_threshold_mm,
     )
+
+
+def get_weather_history_features(
+    grid_point: MesanGridPoint,
+    target_time: datetime,
+    *,
+    archive_path: str | Path = DEFAULT_MESAN_HISTORY_DATABASE,
+    significant_rain_threshold_mm: float | None = None,
+) -> WeatherHistoryFeatures:
+    """Return values only for complete windows; partial windows retain coverage."""
+
+    archive = MesanHistoryArchive(archive_path)
+    try:
+        return get_weather_history_features_from_archive(
+            archive,
+            grid_point,
+            target_time,
+            significant_rain_threshold_mm=significant_rain_threshold_mm,
+        )
+    finally:
+        archive.close()
 
 
 def _haversine_distance_m(first: MesanGridPoint, second: MesanGridPoint) -> float:

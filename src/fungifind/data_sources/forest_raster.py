@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, fields, replace
 from enum import Enum
 from pathlib import Path
 from typing import Any, ClassVar
 
 from fungifind.data_sources.base import HabitatDataSource
-from fungifind.data_sources.raster import RasterPointReader
+from fungifind.data_sources.raster import RasterPointReader, RasterSample
 from fungifind.models import (
     DataSourceMetadata,
     FeatureProvenance,
@@ -149,6 +149,19 @@ class ForestRasterDataSource:
 
     def get_features(self, location: Location) -> FeatureSnapshot[StaticHabitatFeatures]:
         sample = self.reader.sample(location)
+        return self._snapshot_from_sample(sample)
+
+    def get_features_many(
+        self, locations: Sequence[Location]
+    ) -> tuple[FeatureSnapshot[StaticHabitatFeatures], ...]:
+        return tuple(
+            self._snapshot_from_sample(sample)
+            for sample in self.reader.sample_many(locations)
+        )
+
+    def _snapshot_from_sample(
+        self, sample: RasterSample
+    ) -> FeatureSnapshot[StaticHabitatFeatures]:
         interpreted_value: float | None = None
         semantic_status = "nodata"
         quality = 0.0
@@ -251,14 +264,23 @@ class ForestProfileRasterDataSource:
         )
 
     def sample_profile(self, location: Location) -> ForestProfileResult:
+        layers = {
+            name: source.get_features(location)
+            for name, source in self.sources.items()
+        }
+        return self._profile_from_layers(layers)
+
+    def _profile_from_layers(
+        self,
+        layers: Mapping[str, FeatureSnapshot[StaticHabitatFeatures]],
+    ) -> ForestProfileResult:
         feature_values: dict[str, float | None] = {}
         provenance: dict[str, FeatureProvenance] = {}
         source_crs_values: set[str] = set()
         pixel_values: set[tuple[int, int]] = set()
         grid_signatures: set[str] = set()
         qualities: list[float] = []
-        for name, source in self.sources.items():
-            layer = source.get_features(location)
+        for name, layer in layers.items():
             feature_values[name] = getattr(layer.features, name)
             feature_provenance = layer.feature_provenance[name]
             provenance[name] = feature_provenance
@@ -294,6 +316,20 @@ class ForestProfileRasterDataSource:
             feature_provenance=provenance,
         )
         return ForestProfileResult(snapshot=snapshot, diagnostics=diagnostics)
+
+    def get_features_many(
+        self, locations: Sequence[Location]
+    ) -> tuple[FeatureSnapshot[StaticHabitatFeatures], ...]:
+        batches = {
+            name: source.get_features_many(locations)
+            for name, source in self.sources.items()
+        }
+        return tuple(
+            self._profile_from_layers(
+                {name: snapshots[index] for name, snapshots in batches.items()}
+            ).snapshot
+            for index in range(len(locations))
+        )
 
     def get_features(self, location: Location) -> FeatureSnapshot[StaticHabitatFeatures]:
         return self.sample_profile(location).snapshot

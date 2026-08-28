@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import struct
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
@@ -263,6 +263,9 @@ class NmdLandcoverRasterDataSource:
 
     def sample_landcover(self, location: Location) -> LandcoverResult:
         sample = self.reader.sample(location)
+        return self._result_from_sample(sample)
+
+    def _result_from_sample(self, sample: RasterSample) -> LandcoverResult:
         raw_class = _as_integer_class(sample.value)
         interpreted_class: int | None = None
         interpreted_label: str | None = None
@@ -351,3 +354,11 @@ class NmdLandcoverRasterDataSource:
 
     def get_features(self, location: Location) -> FeatureSnapshot[StaticHabitatFeatures]:
         return self.sample_landcover(location).snapshot
+
+    def get_features_many(
+        self, locations: Sequence[Location]
+    ) -> tuple[FeatureSnapshot[StaticHabitatFeatures], ...]:
+        return tuple(
+            self._result_from_sample(sample).snapshot
+            for sample in self.reader.sample_many(locations)
+        )

@@ -135,6 +135,36 @@ python -m pip install -e ".[geo,ml,dev]"
 GDAL installeras normalt transitivt eller via plattformens geospatiala miljö; det
 behövs inte för mockflödet.
 
+## Minimal webbapp
+
+Repositoryt innehåller nu ett FastAPI-kontrakt och en separat Next.js/TypeScript-
+klient med MapLibre. Välj art och datum, klicka en koordinat och läs
+produktionsresultat v1, separat experimentell v2 samt det heuristiska
+markfuktighetsindexet i sidopanelen. Vid zoom 11 eller närmare kan ett separat
+viewportlager visa riktiga gridpolygoner för produktions-v1-indexet. Exkluderade
+och datalösa celler utelämnas i stället för att visas som noll.
+
+Starta backend:
+
+```powershell
+python -m pip install -e ".[geo,api,dev]"
+python -m uvicorn fungifind.api.app:app --reload --host 127.0.0.1 --port 8000
+```
+
+Starta frontend i en annan terminal:
+
+```powershell
+cd frontend
+Copy-Item .env.example .env.local
+npm ci
+npm run dev
+```
+
+Öppna `http://localhost:3000`. Komplett konfiguration, API-kontrakt, felkoder och
+testkommandon finns i [docs/web_app.md](docs/web_app.md). Gridkontrakt,
+batcharkitektur, cache och benchmark finns i
+[docs/viewport_overlay.md](docs/viewport_overlay.md).
+
 ## Inspektera råa GeoTIFF-filer
 
 `scripts/inspect_rasters.py` beskriver råa raster utan att tolka värdena eller
@@ -286,11 +316,11 @@ klasskälla, verkliga punktuppslag och scoringeffekt.
 
 1. Granska de integrerade rasterlagrens semantik och spatiala konsistens i ett
    litet geografiskt pilotområde.
-2. Implementera senare en SMHI-adapter som räknar fram exakt definierade regnfönster och
-   temperaturaggregat med korrekt observationstid och datakvalitet.
-3. Lägg till raster-/API-kontrakttester, cache och tydlig hantering av punkter
-   utanför datatäckning.
+2. Utöka MESAN-arkivets geografiska täckning kontrollerat och mät viewportens
+   trädslagsraster/SGU-flaskhalsar på fler pilotområden.
+3. Sätt explicita latency- och payloadmål innan eventuell tile- eller
+   precompute-arkitektur övervägs.
 4. Först därefter: samla fynd och bakgrunds-/frånvaropunkter, undvik spatialt
    läckage, träna och kalibrera separata artmodeller och utvärdera dem geografiskt.
-5. Exponera den stabila servicegränsen via FastAPI; PostGIS och frontend kan vänta
-   tills analysmotorn och datatäckningen motiverar dem.
+5. Behåll punktförklaringen och viewportindexet som separata kontrakt även när
+   fler datakällor eller modeller införs.

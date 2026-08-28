@@ -91,6 +91,22 @@ def test_nodata_preserves_raw_value_but_returns_no_value(point_raster: RasterFix
     assert sample.is_nodata is True
 
 
+def test_batch_sampling_preserves_order_values_and_nodata(
+    point_raster: RasterFixture,
+) -> None:
+    samples = RasterPointReader(point_raster.path).sample_many(
+        [
+            point_raster.value_location,
+            point_raster.nodata_location,
+            point_raster.value_location,
+        ]
+    )
+
+    assert [sample.value for sample in samples] == [42, None, 42]
+    assert [sample.is_nodata for sample in samples] == [False, True, False]
+    assert samples[0].grid_signature == samples[2].grid_signature
+
+
 def test_outside_bounds_raises_clear_error(point_raster: RasterFixture) -> None:
     with pytest.raises(RasterPointOutsideBoundsError, match="outside raster bounds"):
         RasterPointReader(point_raster.path).sample(Location(0.0, 0.0))

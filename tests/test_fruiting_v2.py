@@ -188,6 +188,13 @@ def test_service_preserves_every_production_score_and_factor() -> None:
     assert integrated.factors == production.factors
     assert integrated.fruiting_score_v2 is not None
     assert integrated.final_score_v2 is not None
+    assert (
+        integrated.fruiting_v2_breakdown.temperature_suitability
+        == production.factors["temperature"]
+    )
+    assert integrated.fruiting_v2_breakdown.season_suitability == production.factors[
+        "season"
+    ]
 
 
 @pytest.mark.parametrize("species", list(Species))
@@ -211,10 +218,10 @@ def test_v2_is_bounded_and_uses_exact_configured_formula(species: Species) -> No
 
 
 def test_moisture_preference_is_species_specific_and_not_monotonic_to_one() -> None:
-    chanterelle_mid = _evaluate(moisture=_available_moisture(0.60))
+    chanterelle_mid = _evaluate(moisture=_available_moisture(0.50))
     funnel_mid = _evaluate(
         species=Species.CRATERELLUS_TUBAEFORMIS,
-        moisture=_available_moisture(0.60),
+        moisture=_available_moisture(0.50),
     )
     chanterelle_saturated = _evaluate(moisture=_available_moisture(1.0))
     funnel_saturated = _evaluate(
@@ -223,7 +230,7 @@ def test_moisture_preference_is_species_specific_and_not_monotonic_to_one() -> N
     )
 
     assert chanterelle_mid.moisture_preference_score == 1.0
-    assert funnel_mid.moisture_preference_score == 1.0
+    assert funnel_mid.moisture_preference_score == pytest.approx(0.833333, abs=1e-6)
     assert chanterelle_saturated.moisture_preference_score == 0.0
     assert funnel_saturated.moisture_preference_score == 0.0
     assert (
@@ -244,6 +251,7 @@ def test_recent_rain_trigger_is_small_separate_component() -> None:
 
     assert dry.recent_rain_trigger == 0.0
     assert recent.recent_rain_trigger > dry.recent_rain_trigger
+    assert recent.recent_rain_trigger == 1.0
     assert recent.fruiting_score_v2 > dry.fruiting_score_v2
     assert recent.component_weights["recent_rain_trigger"] == 0.10
     assert recent.component_weights["recent_rain_trigger"] < recent.component_weights[
@@ -328,8 +336,28 @@ def test_missing_moisture_or_partial_weather_is_explicitly_insufficient() -> Non
     assert missing.status == "insufficient_moisture"
     assert missing.fruiting_score_v2 is None
     assert "rainfall_30d_mm" in missing.missing_inputs
+    assert missing.moisture_confidence == insufficient_moisture.confidence
+    assert missing.moisture_completeness == insufficient_moisture.completeness
     assert partial.status == "insufficient_weather"
     assert partial.fruiting_score_v2 is None
+
+
+def test_service_partial_central_weather_never_silently_falls_back() -> None:
+    result = MushroomScoringService(
+        _HabitatSource(_habitat()),
+        _WeatherSource(_weather(rainfall_30d_mm=None)),
+    ).get_score(
+        LOCATION.latitude,
+        LOCATION.longitude,
+        TARGET_DATE,
+        Species.CANTHARELLUS_CIBARIUS,
+    )
+
+    assert result.fruiting_score is not None
+    assert result.fruiting_score_v2 is None
+    assert result.final_score_v2 is None
+    assert result.fruiting_v2_breakdown.status == "insufficient_moisture"
+    assert "rainfall_30d_mm" in result.fruiting_v2_breakdown.missing_inputs
 
 
 def _scenario(
@@ -350,7 +378,10 @@ def _scenario(
     )
 
 
-def test_requested_sensitivity_scenarios_have_qualitatively_sane_ordering() -> None:
+@pytest.mark.parametrize("species", list(Species))
+def test_requested_sensitivity_scenarios_have_qualitatively_sane_ordering(
+    species: Species,
+) -> None:
     scenario_a = _scenario(
         {
             **{
@@ -369,7 +400,8 @@ def test_requested_sensitivity_scenarios_have_qualitatively_sane_ordering() -> N
             "temp_mean_14d_c": 25.0,
             "relative_humidity_mean_3d_percent": 40.0,
             "relative_humidity_mean_7d_percent": 40.0,
-        }
+        },
+        species,
     )
     scenario_b = _scenario(
         {
@@ -384,7 +416,8 @@ def test_requested_sensitivity_scenarios_have_qualitatively_sane_ordering() -> N
             "temp_mean_14d_c": 25.0,
             "relative_humidity_mean_3d_percent": 40.0,
             "relative_humidity_mean_7d_percent": 40.0,
-        }
+        },
+        species,
     )
     scenario_c = _scenario(
         {
@@ -394,7 +427,8 @@ def test_requested_sensitivity_scenarios_have_qualitatively_sane_ordering() -> N
             "rainfall_14d_mm": 45.0,
             "rainfall_21d_mm": 80.0,
             "rainfall_30d_mm": 130.0,
-        }
+        },
+        species,
     )
     scenario_d = _scenario(
         {
@@ -404,7 +438,8 @@ def test_requested_sensitivity_scenarios_have_qualitatively_sane_ordering() -> N
             "rainfall_14d_mm": 55.0,
             "rainfall_21d_mm": 90.0,
             "rainfall_30d_mm": 140.0,
-        }
+        },
+        species,
     )
     scenario_e = _scenario(
         {
@@ -416,7 +451,8 @@ def test_requested_sensitivity_scenarios_have_qualitatively_sane_ordering() -> N
             "rainfall_30d_mm": 800.0,
             "relative_humidity_mean_3d_percent": 95.0,
             "relative_humidity_mean_7d_percent": 95.0,
-        }
+        },
+        species,
     )
 
     assert scenario_b.fruiting_score_v2 > scenario_a.fruiting_score_v2

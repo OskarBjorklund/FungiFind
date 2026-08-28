@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import sqlite3
 from collections.abc import Mapping, Sequence
+from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
+from threading import RLock
 from typing import Any
 
 from pyproj import CRS, Transformer
@@ -113,19 +115,38 @@ class GeoPackageVectorPointReader:
         self.path = path
         self.layer_name = layer_name
         self._connection_uri = path.as_uri() + "?mode=ro&immutable=1"
+        self._lock = RLock()
+        self._connection: sqlite3.Connection | None = None
         self.layer_info = self._inspect_layer(selected_attributes)
         source_crs = CRS.from_user_input(self.layer_info.source_crs)
         self._transformer = Transformer.from_crs("EPSG:4326", source_crs, always_xy=True)
 
-    def _connect(self) -> sqlite3.Connection:
-        connection = sqlite3.connect(self._connection_uri, uri=True)
+    def _new_connection(self) -> sqlite3.Connection:
+        connection = sqlite3.connect(
+            self._connection_uri,
+            uri=True,
+            check_same_thread=False,
+        )
         connection.execute("PRAGMA query_only=ON")
         return connection
+
+    def _reader_connection(self) -> sqlite3.Connection:
+        if self._connection is None:
+            self._connection = self._new_connection()
+        return self._connection
+
+    def close(self) -> None:
+        """Close the reusable immutable GeoPackage connection."""
+
+        with self._lock:
+            if self._connection is not None:
+                self._connection.close()
+            self._connection = None
 
     def _inspect_layer(
         self, selected_attributes: Sequence[str] | None
     ) -> GeoPackageLayerInfo:
-        with self._connect() as connection:
+        with closing(self._new_connection()) as connection:
             geometry_row = connection.execute(
                 """
                 SELECT column_name, geometry_type_name, srs_id
@@ -238,7 +259,8 @@ class GeoPackageVectorPointReader:
               AND r.miny <= ? AND r.maxy >= ?
             ORDER BY f.{_quoted(info.fid_column)} ASC
         """
-        with self._connect() as connection:
+        with self._lock:
+            connection = self._reader_connection()
             candidates = connection.execute(
                 query,
                 (projected_x, projected_x, projected_y, projected_y),

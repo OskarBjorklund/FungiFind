@@ -139,3 +139,28 @@ def test_read_only_lookup_does_not_change_the_source_geopackage(
     assert hashlib.sha256(path.read_bytes()).hexdigest() == before_hash
     assert after_stat.st_size == before_stat.st_size
     assert after_stat.st_mtime_ns == before_stat.st_mtime_ns
+
+
+def test_reuses_one_immutable_connection_for_repeated_samples(
+    synthetic_gpkg_factory: GpkgFactory,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = synthetic_gpkg_factory(
+        epsg=4326,
+        features=(_feature(1, box(0.0, 0.0, 1.0, 1.0), 100, "Morän"),),
+    )
+    reader = GeoPackageVectorPointReader(path, "grundlager")
+    actual_new_connection = reader._new_connection
+    connection_count = 0
+
+    def counted_connection():
+        nonlocal connection_count
+        connection_count += 1
+        return actual_new_connection()
+
+    monkeypatch.setattr(reader, "_new_connection", counted_connection)
+    reader.sample(Location(0.25, 0.25))
+    reader.sample(Location(0.75, 0.75))
+    reader.close()
+
+    assert connection_count == 1

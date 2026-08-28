@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import json
 import math
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
+from threading import RLock
 from typing import Any
 
 import numpy as np
@@ -198,6 +200,49 @@ class ElevationTileIndex:
         if not tiles:
             raise ElevationManifestError("Elevation manifest contains no local DEM tiles")
         self.tiles = tuple(sorted(tiles, key=lambda tile: (tile.item_id, tile.source_filename)))
+        self._resource_lock = RLock()
+        self._datasets: dict[Path, rasterio.io.DatasetReader] = {}
+        self._transformers: dict[Path, Transformer] = {}
+        self._crs_parts_cache: dict[Path, tuple[PyprojCRS, PyprojCRS | None]] = {}
+
+    def _resources(
+        self, tile: ElevationTile
+    ) -> tuple[
+        rasterio.io.DatasetReader,
+        Transformer,
+        PyprojCRS,
+        PyprojCRS | None,
+    ]:
+        dataset = self._datasets.get(tile.source_path)
+        if dataset is None or dataset.closed:
+            dataset = rasterio.open(tile.source_path, mode="r")
+            if dataset.crs is None:
+                dataset.close()
+                raise RasterCrsMissingError(f"DEM has no CRS: {tile.source_path}")
+            horizontal, vertical = _crs_parts(dataset.crs)
+            self._datasets[tile.source_path] = dataset
+            self._transformers[tile.source_path] = Transformer.from_crs(
+                WGS84_CRS, horizontal, always_xy=True
+            )
+            self._crs_parts_cache[tile.source_path] = (horizontal, vertical)
+        transformer = self._transformers[tile.source_path]
+        horizontal, vertical = self._crs_parts_cache[tile.source_path]
+        return dataset, transformer, horizontal, vertical
+
+    @contextmanager
+    def read_resources(self, tile: ElevationTile):
+        """Hold the shared read lock while using one cached DEM dataset."""
+
+        with self._resource_lock:
+            yield self._resources(tile)
+
+    def close(self) -> None:
+        with self._resource_lock:
+            for dataset in self._datasets.values():
+                dataset.close()
+            self._datasets.clear()
+            self._transformers.clear()
+            self._crs_parts_cache.clear()
 
     def candidate_tiles(self, location: Location) -> tuple[ElevationTile, ...]:
         return tuple(tile for tile in self.tiles if tile.bbox_contains(location))
@@ -216,11 +261,8 @@ class ElevationTileIndex:
             )
         matches: list[ElevationTileMatch] = []
         for tile in candidates:
-            with rasterio.open(tile.source_path, mode="r") as dataset:
-                if dataset.crs is None:
-                    raise RasterCrsMissingError(f"DEM has no CRS: {tile.source_path}")
-                horizontal, vertical = _crs_parts(dataset.crs)
-                transformer = Transformer.from_crs(WGS84_CRS, horizontal, always_xy=True)
+            with self.read_resources(tile) as resources:
+                dataset, transformer, horizontal, vertical = resources
                 projected_x, projected_y = transformer.transform(
                     location.longitude,
                     location.latitude,
@@ -334,7 +376,8 @@ class TerrainDemReader:
     def sample_terrain(self, location: Location) -> TerrainSampleResult:
         match = self.tile_index.find_tile(location, neighborhood_radius=1)
         tile = match.tile
-        with rasterio.open(tile.source_path, mode="r") as dataset:
+        with self.tile_index.read_resources(tile) as resources:
+            dataset, _, _, _ = resources
             if self.band > dataset.count:
                 raise RasterPointError(
                     f"DEM has {dataset.count} band(s); requested band {self.band}"

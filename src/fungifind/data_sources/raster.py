@@ -5,8 +5,11 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from collections import defaultdict
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from threading import RLock
 from typing import Any
 
 import numpy as np
@@ -123,25 +126,50 @@ class RasterPointReader:
         self.band = band
         if band < 1:
             raise RasterBandError("band must be at least 1")
+        self._lock = RLock()
+        self._dataset: rasterio.io.DatasetReader | None = None
+        self._transformer: Transformer | None = None
 
-    def sample(self, location: Location) -> RasterSample:
-        if not self.raster_path.is_file():
-            raise FileNotFoundError(f"Raster does not exist: {self.raster_path}")
-
-        # Explicit read-only mode ensures this component never modifies the GeoTIFF.
-        with rasterio.open(self.raster_path, mode="r") as dataset:
+    def _open_dataset(self) -> tuple[rasterio.io.DatasetReader, Transformer]:
+        dataset = self._dataset
+        if dataset is None or dataset.closed:
+            if not self.raster_path.is_file():
+                raise FileNotFoundError(f"Raster does not exist: {self.raster_path}")
+            dataset = rasterio.open(self.raster_path, mode="r")
             if dataset.crs is None:
+                dataset.close()
                 raise RasterCrsMissingError(f"Raster has no CRS: {self.raster_path}")
             if self.band > dataset.count:
+                count = dataset.count
+                dataset.close()
                 raise RasterBandError(
-                    f"Raster has {dataset.count} band(s); requested band {self.band}"
+                    f"Raster has {count} band(s); requested band {self.band}"
                 )
-
-            transformer = Transformer.from_crs(
+            self._dataset = dataset
+            self._transformer = Transformer.from_crs(
                 WGS84_CRS,
                 horizontal_crs(dataset.crs),
                 always_xy=True,
             )
+        if self._transformer is None:  # defensive guard for static type checking
+            raise RasterPointError("Raster transformer was not initialized")
+        return dataset, self._transformer
+
+    def close(self) -> None:
+        """Close the reusable read-only dataset handle."""
+
+        with self._lock:
+            if self._dataset is not None:
+                self._dataset.close()
+            self._dataset = None
+            self._transformer = None
+
+    def sample(self, location: Location) -> RasterSample:
+        # Rasterio dataset readers are not assumed to be thread-safe. The lock
+        # lets viewport requests reuse one read-only handle without overlapping
+        # window reads from concurrent FastAPI worker threads.
+        with self._lock:
+            dataset, transformer = self._open_dataset()
             projected_x, projected_y = transformer.transform(
                 location.longitude,
                 location.latitude,
@@ -190,4 +218,84 @@ class RasterPointReader:
                 band=self.band,
                 nodata_value=_serialized_nodata(dataset.nodatavals[self.band - 1]),
                 grid_signature=raster_grid_signature(dataset),
+            )
+
+    def sample_many(self, locations: Sequence[Location]) -> tuple[RasterSample, ...]:
+        """Sample many points by reading every touched raster block only once."""
+
+        if not locations:
+            return ()
+        with self._lock:
+            dataset, transformer = self._open_dataset()
+            projected_xs, projected_ys = transformer.transform(
+                [location.longitude for location in locations],
+                [location.latitude for location in locations],
+            )
+            rows_and_columns: list[tuple[int, int]] = []
+            for location, projected_x, projected_y in zip(
+                locations, projected_xs, projected_ys, strict=True
+            ):
+                if not math.isfinite(projected_x) or not math.isfinite(projected_y):
+                    raise RasterPointOutsideBoundsError(
+                        f"Coordinate could not be projected into {dataset.crs.to_string()}"
+                    )
+                row, col = dataset.index(projected_x, projected_y)
+                if row < 0 or row >= dataset.height or col < 0 or col >= dataset.width:
+                    raise RasterPointOutsideBoundsError(
+                        "WGS84 coordinate "
+                        f"({location.latitude}, {location.longitude}) projects outside "
+                        f"raster bounds {dataset.bounds}"
+                    )
+                rows_and_columns.append((int(row), int(col)))
+
+            block_height, block_width = dataset.block_shapes[self.band - 1]
+            grouped: dict[tuple[int, int], list[int]] = defaultdict(list)
+            for index, (row, col) in enumerate(rows_and_columns):
+                grouped[(row // block_height, col // block_width)].append(index)
+
+            raw_values: list[float | int | None] = [None] * len(locations)
+            nodata_flags = [False] * len(locations)
+            for (block_row, block_col), indices in grouped.items():
+                row_offset = block_row * block_height
+                col_offset = block_col * block_width
+                height = min(block_height, dataset.height - row_offset)
+                width = min(block_width, dataset.width - col_offset)
+                block = dataset.read(
+                    self.band,
+                    window=Window(col_offset, row_offset, width, height),
+                    masked=True,
+                )
+                mask = np.ma.getmaskarray(block)
+                for index in indices:
+                    row, col = rows_and_columns[index]
+                    local_row = row - row_offset
+                    local_col = col - col_offset
+                    raw = _python_scalar(block.data[local_row, local_col])
+                    is_nodata = bool(mask[local_row, local_col])
+                    if isinstance(raw, float) and not math.isfinite(raw):
+                        is_nodata = True
+                    raw_values[index] = raw
+                    nodata_flags[index] = is_nodata
+
+            crs_text = dataset.crs.to_string()
+            epsg = raster_epsg_code(dataset.crs)
+            nodata_value = _serialized_nodata(dataset.nodatavals[self.band - 1])
+            signature = raster_grid_signature(dataset)
+            return tuple(
+                RasterSample(
+                    value=None if nodata_flags[index] else raw_values[index],
+                    raw_value=raw_values[index],
+                    is_nodata=nodata_flags[index],
+                    source_crs=crs_text,
+                    source_epsg=epsg,
+                    projected_x=float(projected_xs[index]),
+                    projected_y=float(projected_ys[index]),
+                    pixel_row=rows_and_columns[index][0],
+                    pixel_col=rows_and_columns[index][1],
+                    source_path=str(self.raster_path),
+                    band=self.band,
+                    nodata_value=nodata_value,
+                    grid_signature=signature,
+                )
+                for index in range(len(locations))
             )

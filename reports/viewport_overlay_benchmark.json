@@ -1,0 +1,129 @@
+{
+  "benchmark": "fungifind_viewport_overlay_v1",
+  "model_version": "production_v1",
+  "species": "cantharellus_cibarius",
+  "date": "2026-08-27",
+  "center": {
+    "latitude": 59.160136,
+    "longitude": 18.247348
+  },
+  "cases": [
+    {
+      "case": "1x1_km_at_50m",
+      "requested_size_m": 1000,
+      "requested_resolution_m": 50,
+      "actual_resolution_m": 50,
+      "grid_cell_count": 529,
+      "eligible_habitat_cell_count": 512,
+      "feature_count": 512,
+      "excluded_cell_count": 17,
+      "no_data_cell_count": 0,
+      "unique_mesan_point_count": 1,
+      "payload_bytes": 209825,
+      "cold_time_ms": 3392.929,
+      "warm_time_ms": 3071.641,
+      "cold_cells_per_second": 155.91,
+      "warm_cells_per_second": 172.22,
+      "source_profile_ms": {
+        "nmd": 73.92,
+        "slu_wetness": 132.378,
+        "tree_rasters": 2692.264,
+        "sgu": 530.907,
+        "dem": 4.531,
+        "moisture": 0.0,
+        "mesan": 36.182,
+        "scoring": 21.403
+      },
+      "timings_ms": {
+        "grid": 6.004,
+        "grid_ms": 0.0,
+        "habitat_ms": 3327.913,
+        "mesan_resolve_ms": 3.398,
+        "weather_ms": 36.182,
+        "scoring_ms": 21.403,
+        "serialization_ms": 0.779,
+        "total_ms": 3392.176,
+        "json_encoding": 4.831,
+        "backend_cache_lookup": 0.0055
+      }
+    },
+    {
+      "case": "5x5_km_at_100m",
+      "requested_size_m": 5000,
+      "requested_resolution_m": 100,
+      "actual_resolution_m": 100,
+      "grid_cell_count": 3080,
+      "eligible_habitat_cell_count": 2825,
+      "feature_count": 2825,
+      "excluded_cell_count": 255,
+      "no_data_cell_count": 0,
+      "unique_mesan_point_count": 1,
+      "payload_bytes": 1163110,
+      "cold_time_ms": 7910.255,
+      "warm_time_ms": 7359.056,
+      "cold_cells_per_second": 389.37,
+      "warm_cells_per_second": 418.53,
+      "source_profile_ms": {
+        "nmd": 178.499,
+        "slu_wetness": 321.66,
+        "tree_rasters": 3829.029,
+        "sgu": 3432.056,
+        "dem": 28.954,
+        "moisture": 0.0,
+        "mesan": 37.943,
+        "scoring": 124.814
+      },
+      "timings_ms": {
+        "grid": 63.052,
+        "grid_ms": 0.0,
+        "habitat_ms": 7711.96,
+        "mesan_resolve_ms": 11.601,
+        "weather_ms": 37.943,
+        "scoring_ms": 124.814,
+        "serialization_ms": 4.154,
+        "total_ms": 7903.268,
+        "json_encoding": 29.487,
+        "backend_cache_lookup": 0.2953
+      }
+    },
+    {
+      "case": "10x10_km_at_200m",
+      "requested_size_m": 10000,
+      "requested_resolution_m": 200,
+      "actual_resolution_m": 200,
+      "grid_cell_count": 3136,
+      "eligible_habitat_cell_count": 2566,
+      "feature_count": 1686,
+      "excluded_cell_count": 570,
+      "no_data_cell_count": 880,
+      "unique_mesan_point_count": 1,
+      "payload_bytes": 694296,
+      "cold_time_ms": 8568.35,
+      "warm_time_ms": 7256.903,
+      "cold_cells_per_second": 366.0,
+      "warm_cells_per_second": 432.14,
+      "source_profile_ms": {
+        "nmd": 199.251,
+        "slu_wetness": 499.023,
+        "tree_rasters": 4565.108,
+        "sgu": 3421.875,
+        "dem": 30.27,
+        "moisture": 0.0,
+        "mesan": 40.602,
+        "scoring": 75.975
+      },
+      "timings_ms": {
+        "grid": 82.46,
+        "grid_ms": 0.0,
+        "habitat_ms": 8352.637,
+        "mesan_resolve_ms": 71.221,
+        "weather_ms": 40.602,
+        "scoring_ms": 75.975,
+        "serialization_ms": 3.039,
+        "total_ms": 8558.041,
+        "json_encoding": 16.962,
+        "backend_cache_lookup": 1.3101
+      }
+    }
+  ]
+}

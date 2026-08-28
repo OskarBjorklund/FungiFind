@@ -184,12 +184,19 @@ class CompositeHabitatDataSource:
         )
 
     def get_features(self, location: Location) -> FeatureSnapshot[StaticHabitatFeatures]:
+        return self._merge_snapshots(
+            [source.get_features(location) for source in self.sources.values()]
+        )
+
+    def _merge_snapshots(
+        self,
+        snapshots: Sequence[FeatureSnapshot[StaticHabitatFeatures]],
+    ) -> FeatureSnapshot[StaticHabitatFeatures]:
         values: dict[str, object] = {item.name: None for item in fields(StaticHabitatFeatures)}
         provenance: dict[str, FeatureProvenance] = {}
         qualities: list[float] = []
         contains_mock = False
-        for source in self.sources.values():
-            snapshot = source.get_features(location)
+        for snapshot in snapshots:
             qualities.append(snapshot.metadata.quality)
             contains_mock = contains_mock or snapshot.metadata.is_mock
             for feature_field in fields(StaticHabitatFeatures):
@@ -221,3 +228,95 @@ class CompositeHabitatDataSource:
             ),
             feature_provenance=provenance,
         )
+
+    def get_features_many(
+        self, locations: Sequence[Location]
+    ) -> tuple[FeatureSnapshot[StaticHabitatFeatures], ...]:
+        batches: list[tuple[FeatureSnapshot[StaticHabitatFeatures], ...]] = []
+        for source in self.sources.values():
+            batches.append(self._source_batch(source, locations))
+        return tuple(
+            self._merge_snapshots([batch[index] for batch in batches])
+            for index in range(len(locations))
+        )
+
+    @staticmethod
+    def _source_batch(
+        source: HabitatDataSource,
+        locations: Sequence[Location],
+    ) -> tuple[FeatureSnapshot[StaticHabitatFeatures], ...]:
+        batch_method = getattr(source, "get_features_many", None)
+        if callable(batch_method):
+            snapshots = tuple(batch_method(locations))
+        else:
+            snapshots = tuple(
+                source.get_features(location) for location in locations
+            )
+        if len(snapshots) != len(locations):
+            raise ValueError("Habitat batch source returned the wrong item count")
+        return snapshots
+
+    @staticmethod
+    def _has_validated_exclusion(
+        snapshot: FeatureSnapshot[StaticHabitatFeatures],
+    ) -> bool:
+        return any(
+            provenance.semantic_status.startswith("validated")
+            and isinstance(
+                provenance.details.get("habitat_exclusion_code"), str
+            )
+            for provenance in snapshot.feature_provenance.values()
+        )
+
+    def get_features_many_eligibility_first(
+        self, locations: Sequence[Location]
+    ) -> tuple[FeatureSnapshot[StaticHabitatFeatures], ...]:
+        """Read exclusion layers first and skip expensive sources when excluded."""
+
+        eligibility_names = tuple(
+            name
+            for name in ("landcover", "static_wetness")
+            if name in self.sources
+        )
+        if not eligibility_names:
+            return self.get_features_many(locations)
+        eligibility_batches = [
+            self._source_batch(self.sources[name], locations)
+            for name in eligibility_names
+        ]
+        preflight = tuple(
+            self._merge_snapshots(
+                [batch[index] for batch in eligibility_batches]
+            )
+            for index in range(len(locations))
+        )
+        eligible_indices = [
+            index
+            for index, snapshot in enumerate(preflight)
+            if not self._has_validated_exclusion(snapshot)
+        ]
+        remaining_sources = [
+            source
+            for name, source in self.sources.items()
+            if name not in eligibility_names
+        ]
+        if not eligible_indices or not remaining_sources:
+            return preflight
+
+        eligible_locations = [locations[index] for index in eligible_indices]
+        remaining_batches = [
+            self._source_batch(source, eligible_locations)
+            for source in remaining_sources
+        ]
+        result = list(preflight)
+        for eligible_offset, original_index in enumerate(eligible_indices):
+            result[original_index] = self._merge_snapshots(
+                [
+                    preflight[original_index],
+                    *(
+                        batch[eligible_offset]
+                        for batch in remaining_batches
+                    ),
+                ]
+            )
+        return tuple(result)
